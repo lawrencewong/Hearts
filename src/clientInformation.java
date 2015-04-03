@@ -1,4 +1,5 @@
 import java.net.InetAddress;
+import java.util.ArrayList;
 
 
 public class clientInformation {
@@ -6,12 +7,15 @@ public class clientInformation {
 	private InetAddress ipAddress;
 	private int port;
 	private boolean ready;
+	private int seating;
+	private ArrayList<Card> hand = new ArrayList<Card>();
 	
 	public clientInformation(){
 		username = null;
 		ipAddress = null;
 		port = 0;
 		ready = false;
+		seating = 0;
 	}
 	
 	public void setUsernameCI(String clientName){
@@ -30,6 +34,10 @@ public class clientInformation {
 		ready = status;
 	}
 	
+	public void setSeatingCI(int i){
+		seating = i;
+	}
+	
 	public String getUsernameCI(){
 		return username;
 	}
@@ -46,5 +54,26 @@ public class clientInformation {
 		return ready;
 	}
 
+	public int getSeatingCI(){
+		return seating;
+	}
+	
+	public void dealToHandCI(Card card){
+		hand.add(card);
+	}
+	
+	public ArrayList<Card> getHand(){
+		return hand;
+	}
+	
+	public void playCardCI(Card card){
+		String toPlay = card.getSuit()+card.getRank();
+		for(int i = 0; i < hand.size(); i++){
+			String currentCard = hand.get(i).getSuit()+hand.get(i).getRank();
+			if(currentCard.equals(toPlay)){
+				 hand.remove(i);
+			}
+		}
+	}
 
 }

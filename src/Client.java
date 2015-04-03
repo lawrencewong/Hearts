@@ -24,6 +24,7 @@ import javax.swing.JButton;
 import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JPanel;
 
 
 public class Client {
@@ -39,6 +40,19 @@ public class Client {
 	private messageOBJ outMessage = null;
 	private JLabel lblRoomFullSorry;
 	private JButton btnExit;
+	private JPanel bottomHandpanel;
+	private JPanel leftHandpanel;
+	private JPanel rightHandPanel;
+	private JPanel topHandpanel;
+	private JPanel leftCardPanel;
+	private JPanel rightCardPanel;
+	private JPanel bottomCardPanel;
+	private JPanel topCardPanel;
+	private JLabel lblIn;
+	private JLabel leftNameAndScore;
+	private JLabel topNameAndScore;
+	private JLabel rightNameAndScore;
+	private JLabel bottomNameAndScore;
 
 	public Client(String serverIP, String clientUsername) throws IOException {
 		IPAddress  = InetAddress.getByName(serverIP);
@@ -63,18 +77,28 @@ public class Client {
 		frame.setTitle("Hearts @ " + IPAddress);
 		frame.getContentPane().setLayout(null);
 		
-		JLabel playingASlblNewLabel = new JLabel("Playing as " + clientName);
-		playingASlblNewLabel.setFont(new Font("HelveticaNeueLT Pro 55 Roman", Font.PLAIN, 12));
-		playingASlblNewLabel.setForeground(new Color(255, 255, 255));
-		playingASlblNewLabel.setBounds(10, 11, 292, 23);
-		frame.getContentPane().add(playingASlblNewLabel);
+		lblRoomFullSorry = new JLabel("Room full. Sorry!");
+		lblRoomFullSorry.setForeground(Color.WHITE);
+		lblRoomFullSorry.setHorizontalAlignment(SwingConstants.CENTER);
+		lblRoomFullSorry.setBounds(431, 189, 200, 50);
+		frame.getContentPane().add(lblRoomFullSorry);
+		lblRoomFullSorry.setLabelFor(btnExit);
+		lblRoomFullSorry.setVisible(false);
 		
 		readylabel = new JLabel("");
 		readylabel.setHorizontalAlignment(SwingConstants.CENTER);
 		readylabel.setForeground(Color.WHITE);
 		readylabel.setVerticalAlignment(SwingConstants.TOP);
-		readylabel.setBounds(337, 252, 200, 39);
+		readylabel.setBounds(431, 200, 200, 39);
 		frame.getContentPane().add(readylabel);
+		readylabel.setLabelFor(btnReady);
+		readylabel.setVisible(false);
+		
+		JLabel playingASlblNewLabel = new JLabel("Playing as " + clientName);
+		playingASlblNewLabel.setFont(new Font("HelveticaNeueLT Pro 55 Roman", Font.PLAIN, 12));
+		playingASlblNewLabel.setForeground(new Color(255, 255, 255));
+		playingASlblNewLabel.setBounds(0, 0, 225, 23);
+		frame.getContentPane().add(playingASlblNewLabel);
 		
 		btnReady = new JButton("Ready");
 		btnReady.addActionListener(new ActionListener() {
@@ -89,17 +113,9 @@ public class Client {
 				outThread.run();
 			}
 		});
-		readylabel.setLabelFor(btnReady);
-		btnReady.setBounds(337, 307, 200, 50);
+		btnReady.setBounds(431, 307, 200, 50);
 		btnReady.setVisible(false);
-		readylabel.setVisible(false);
 		frame.getContentPane().add(btnReady);
-		
-		lblRoomFullSorry = new JLabel("Room full. Sorry!");
-		lblRoomFullSorry.setForeground(Color.WHITE);
-		lblRoomFullSorry.setHorizontalAlignment(SwingConstants.CENTER);
-		lblRoomFullSorry.setBounds(337, 191, 200, 50);
-		frame.getContentPane().add(lblRoomFullSorry);
 		
 		btnExit = new JButton("Exit");
 		btnExit.addActionListener(new ActionListener() {
@@ -107,12 +123,73 @@ public class Client {
 				System.exit(0);
 			}
 		});
-		lblRoomFullSorry.setLabelFor(btnExit);
-		lblRoomFullSorry.setVisible(false);
 		btnExit.setVisible(false);
-		btnExit.setBounds(337, 307, 200, 50);
+		btnExit.setBounds(431, 307, 200, 50);
 		frame.getContentPane().add(btnExit);
-		frame.setBounds(100, 100, 949, 618);
+		
+		bottomHandpanel = new JPanel();
+		bottomHandpanel.setBounds(235, 584, 600, 100);
+		frame.getContentPane().add(bottomHandpanel);
+		
+		leftHandpanel = new JPanel();
+		leftHandpanel.setBounds(10, 29, 100, 600);
+		frame.getContentPane().add(leftHandpanel);
+		
+		rightHandPanel = new JPanel();
+		rightHandPanel.setBounds(1010, 29, 100, 600);
+		frame.getContentPane().add(rightHandPanel);
+		
+		topHandpanel = new JPanel();
+		topHandpanel.setBounds(235, 11, 600, 100);
+		frame.getContentPane().add(topHandpanel);
+		
+		leftCardPanel = new JPanel();
+		leftCardPanel.setBounds(336, 246, 85, 135);
+		frame.getContentPane().add(leftCardPanel);
+		
+		rightCardPanel = new JPanel();
+		rightCardPanel.setBounds(641, 246, 85, 135);
+		frame.getContentPane().add(rightCardPanel);
+		
+		bottomCardPanel = new JPanel();
+		bottomCardPanel.setBounds(491, 368, 85, 135);
+		frame.getContentPane().add(bottomCardPanel);
+		
+		topCardPanel = new JPanel();
+		topCardPanel.setBounds(491, 161, 85, 135);
+		frame.getContentPane().add(topCardPanel);
+		
+		lblIn = new JLabel("Instructions");
+		lblIn.setForeground(Color.WHITE);
+		lblIn.setBounds(138, 368, 76, 39);
+		frame.getContentPane().add(lblIn);
+		
+		leftNameAndScore = new JLabel("");
+		leftNameAndScore.setForeground(Color.WHITE);
+		leftNameAndScore.setBounds(116, 277, 178, 50);
+		frame.getContentPane().add(leftNameAndScore);
+		
+		topNameAndScore = new JLabel("");
+		topNameAndScore.setForeground(Color.WHITE);
+		topNameAndScore.setBounds(431, 118, 200, 39);
+		frame.getContentPane().add(topNameAndScore);
+		
+		rightNameAndScore = new JLabel("");
+		rightNameAndScore.setForeground(Color.WHITE);
+		rightNameAndScore.setBounds(826, 277, 178, 50);
+		frame.getContentPane().add(rightNameAndScore);
+		
+		bottomNameAndScore = new JLabel("");
+		bottomNameAndScore.setForeground(Color.WHITE);
+		bottomNameAndScore.setBounds(431, 534, 200, 39);
+		frame.getContentPane().add(bottomNameAndScore);
+		
+		JTextArea textArea = new JTextArea();
+		textArea.setForeground(Color.WHITE);
+		textArea.setBackground(new Color(0, 100, 0));
+		textArea.setBounds(138, 407, 275, 166);
+		frame.getContentPane().add(textArea);
+		frame.setBounds(100, 100, 1136, 734);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 
@@ -162,7 +239,6 @@ public class Client {
 	public class OutThread extends Thread{
 		
 		public void run(){
-			System.out.print("OUT\n");
 			byte[] sendData;
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			ObjectOutputStream os = null;
