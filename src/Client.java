@@ -20,6 +20,10 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import javax.swing.JButton;
+import javax.swing.SwingConstants;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 
 public class Client {
@@ -29,8 +33,12 @@ public class Client {
 	DatagramSocket clientSocket = new DatagramSocket();
 	InetAddress IPAddress;
 	private JFrame frame;
+	JButton btnReady;
+	JLabel readylabel;
 	String clientName;
 	private messageOBJ outMessage = null;
+	private JLabel lblRoomFullSorry;
+	private JButton btnExit;
 
 	public Client(String serverIP, String clientUsername) throws IOException {
 		IPAddress  = InetAddress.getByName(serverIP);
@@ -60,6 +68,50 @@ public class Client {
 		playingASlblNewLabel.setForeground(new Color(255, 255, 255));
 		playingASlblNewLabel.setBounds(10, 11, 292, 23);
 		frame.getContentPane().add(playingASlblNewLabel);
+		
+		readylabel = new JLabel("");
+		readylabel.setHorizontalAlignment(SwingConstants.CENTER);
+		readylabel.setForeground(Color.WHITE);
+		readylabel.setVerticalAlignment(SwingConstants.TOP);
+		readylabel.setBounds(337, 252, 200, 39);
+		frame.getContentPane().add(readylabel);
+		
+		btnReady = new JButton("Ready");
+		btnReady.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				readylabel.setVisible(false);
+        		btnReady.setVisible(false);
+				messageOBJ outPacket = new messageOBJ();
+				outPacket.setTypeOBJMessage("R");
+				outPacket.setMessageOBJMessage(clientName + " is ready.");
+				outPacket.setUsernameOBJMessage(clientName);
+				outMessage = outPacket;
+				outThread.run();
+			}
+		});
+		readylabel.setLabelFor(btnReady);
+		btnReady.setBounds(337, 307, 200, 50);
+		btnReady.setVisible(false);
+		readylabel.setVisible(false);
+		frame.getContentPane().add(btnReady);
+		
+		lblRoomFullSorry = new JLabel("Room full. Sorry!");
+		lblRoomFullSorry.setForeground(Color.WHITE);
+		lblRoomFullSorry.setHorizontalAlignment(SwingConstants.CENTER);
+		lblRoomFullSorry.setBounds(337, 191, 200, 50);
+		frame.getContentPane().add(lblRoomFullSorry);
+		
+		btnExit = new JButton("Exit");
+		btnExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+		lblRoomFullSorry.setLabelFor(btnExit);
+		lblRoomFullSorry.setVisible(false);
+		btnExit.setVisible(false);
+		btnExit.setBounds(337, 307, 200, 50);
+		frame.getContentPane().add(btnExit);
 		frame.setBounds(100, 100, 949, 618);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
@@ -69,7 +121,41 @@ public class Client {
 	
 	public class InThread extends Thread{
 		public void run(){
-			System.out.print("YO\n");
+			byte[] receiveData = new byte[1024];
+			
+			while(true){
+				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+                try {
+					clientSocket.receive(receivePacket);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+                receiveData = receivePacket.getData();
+                ByteArrayInputStream in = new ByteArrayInputStream(receiveData);
+                ObjectInputStream is = null;
+				try {
+					is = new ObjectInputStream(in);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+                
+                try{
+                	messageOBJ receiveMessage = (messageOBJ) is.readObject();
+                	
+                	if(receiveMessage.getTypeOBJMessage().equals("AR")){
+                		readylabel.setText("Are you ready?");
+                		readylabel.setVisible(true);
+                		btnReady.setVisible(true);
+                	}else if(receiveMessage.getTypeOBJMessage().equals("GF")){
+                		lblRoomFullSorry.setVisible(true);
+                		btnExit.setVisible(true);
+                	}
+                } catch (ClassNotFoundException e){
+                	e.printStackTrace();
+                } catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 	

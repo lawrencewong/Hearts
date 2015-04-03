@@ -5,11 +5,13 @@ public class clientInformation {
 	private String username;
 	private InetAddress ipAddress;
 	private int port;
+	private boolean ready;
 	
 	public clientInformation(){
 		username = null;
 		ipAddress = null;
 		port = 0;
+		ready = false;
 	}
 	
 	public void setUsernameCI(String clientName){
@@ -24,6 +26,10 @@ public class clientInformation {
 		port = clientPort;
 	}
 	
+	public void setReadyCI(boolean status){
+		ready = status;
+	}
+	
 	public String getUsernameCI(){
 		return username;
 	}
@@ -35,5 +41,10 @@ public class clientInformation {
 	public int getPortCI(){
 		return port;
 	}
+	
+	public boolean getReadyCI(){
+		return ready;
+	}
+
 
 }
