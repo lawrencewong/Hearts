@@ -42,7 +42,7 @@ public class Servers {
 	static Card[] deck = new Card[52];
 	static String[] suit = {"S", "H", "C", "D"};
 	static String[] rank = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
-	static String[] instructions = {"Choose three cards from your hand they will be passed to the player on your left."};
+	static String[] instructions = {"Choose three cards from your hand they will be passed to the player on your left. Wait for your cards to be passed."};
 	
 	/**
 	 * Launch the application.
@@ -129,6 +129,21 @@ public class Servers {
 							playersReady++;
 						}
 					}
+	        	}else if(receiveMessageOBJ.getTypeOBJMessage().equals("PC")){ // Passing a card
+//	        		for(int i = 0; i < clientInfoList.size(); i++){
+//						if(clientInfoList.get(i).getUsernameCI().equals(receiveMessageOBJ.getUsernameOBJMessage())){
+//							if(clientInfoList.get(i).getSeatingCI() == 1){
+//								clientInfoList.get(i).playCardCI(receiveMessageOBJ.getCardOBJMessage());
+//								passCard(clientInfoList.get(2), receiveMessageOBJ.getCardOBJMessage());
+//							}else if(clientInfoList.get(i).getSeatingCI() == 2){
+//								passCard(clientInfoList.get(3), receiveMessageOBJ.getCardOBJMessage());
+//							}else if(clientInfoList.get(i).getSeatingCI() == 3){
+//								passCard(clientInfoList.get(4), receiveMessageOBJ.getCardOBJMessage());
+//							}else if(clientInfoList.get(i).getSeatingCI() == 4){
+//								passCard(clientInfoList.get(1), receiveMessageOBJ.getCardOBJMessage());
+//							}
+//						}
+//					}
 	        	}
 	        	
 	        	// Game start or continue
@@ -154,7 +169,7 @@ public class Servers {
 	        			
 	        			// Print hands
 	        			for( int j =0; j <clientInfoList.size(); j++ ){
-	        				serverLogtextArea.append(j + " HAS: \n");
+	        				serverLogtextArea.append(clientInfoList.get(j).getUsernameCI() + " HAS: \n");
         					for(int k=0; k<clientInfoList.get(j).getHand().size(); k++){
         						serverLogtextArea.append(clientInfoList.get(j).getHand().get(k).getSuit() + clientInfoList.get(j).getHand().get(k).getRank() + " ");
         					}
@@ -248,6 +263,18 @@ public class Servers {
 		instructionMessage.setUsernameOBJMessage(client.getUsernameCI());
 		instructionMessage.setCardOBJMessage(null);
 		outMessage = instructionMessage;
+		sendClientObject(client);
+	}
+	
+	public static void passCard( clientInformation client, Card card){
+		serverLogtextArea.append("Passing "  + card.getSuit() + card.getRank() + " to " + client.getUsernameCI() + " SEAT: " + client.getSeatingCI() + "\n");
+		client.dealToHandCI(card);
+		messageOBJ passCardMessage = new messageOBJ();
+		passCardMessage.setTypeOBJMessage("PC");
+		passCardMessage.setMessageOBJMessage("");
+		passCardMessage.setUsernameOBJMessage(client.getUsernameCI());
+		passCardMessage.setCardOBJMessage(card);
+		outMessage = passCardMessage;
 		sendClientObject(client);
 	}
 	
