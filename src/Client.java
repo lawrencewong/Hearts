@@ -40,9 +40,9 @@ import java.awt.event.MouseEvent;
 
 
 public class Client {
-	private ArrayList<Card> hand = new ArrayList<Card>();
-	private ArrayList<Card> passedToMe = new ArrayList<Card>();
-	private ArrayList<Integer> passedCards = new ArrayList<Integer>();
+	private static ArrayList<Card> hand = new ArrayList<Card>();
+	private static ArrayList<Card> passedToMe = new ArrayList<Card>();
+	private static ArrayList<Integer> passedCards = new ArrayList<Integer>();
 	InThread inThread = new InThread();
 	private static OutThread outThread;
 	BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
@@ -55,7 +55,7 @@ public class Client {
 	private static messageOBJ outMessage = null;
 	private JLabel lblRoomFullSorry;
 	private JButton btnExit;
-	private JPanel bottomHandpanel;
+	private static JPanel bottomHandpanel;
 	private JPanel leftHandpanel;
 	private JPanel rightHandPanel;
 	private JPanel topHandpanel;
@@ -82,7 +82,7 @@ public class Client {
 	private JLabel bhc12;
 	private JLabel bhc3;
 	private JTextArea instructionArea;
-	private HashMap<String, JLabel> cardLabels = new HashMap<String, JLabel>();
+	private static HashMap<String, JLabel> cardLabels = new HashMap<String, JLabel>();
 	private int toPass = 3;
 	
 	public Client(String serverIP, String clientUsername) throws IOException {
@@ -170,12 +170,13 @@ public class Client {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				if(toPass > 0){
+					bhc0.setIcon(null);
+					bhc0.setVisible(false);
 					System.out.println(hand.get(0).getSuit() + hand.get(0).getRank());
 					passCard(hand.get(0));
 					passedCards.add(0);
-					bhc0.setIcon(null);
-					bhc0.setVisible(false);
 					toPass--;
+					checkUpdate();
 				}
 			}
 		});
@@ -186,12 +187,13 @@ public class Client {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if(toPass > 0){
+					bhc1.setIcon(null);
+					bhc1.setVisible(false);
 					System.out.println(hand.get(1).getSuit() + hand.get(1).getRank());
 					passCard(hand.get(1));
 					passedCards.add(1);
-					bhc1.setIcon(null);
-					bhc1.setVisible(false);
 					toPass--;
+					checkUpdate();
 				}
 			}
 		});
@@ -202,12 +204,13 @@ public class Client {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if(toPass > 0){
+					bhc2.setIcon(null);
+					bhc2.setVisible(false);
 					System.out.println(hand.get(2).getSuit() + hand.get(2).getRank());
 					passCard(hand.get(2));
 					passedCards.add(2);
-					bhc2.setIcon(null);
-					bhc2.setVisible(false);
 					toPass--;
+					checkUpdate();
 				}
 			}
 		});
@@ -218,12 +221,13 @@ public class Client {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if(toPass > 0){
+					bhc3.setIcon(null);
+					bhc3.setVisible(false);
 					System.out.println(hand.get(3).getSuit() + hand.get(3).getRank());
 					passCard(hand.get(3));
 					passedCards.add(3);
-					bhc3.setIcon(null);
-					bhc3.setVisible(false);
 					toPass--;
+					checkUpdate();
 				}
 			}
 		});
@@ -234,12 +238,13 @@ public class Client {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if(toPass > 0){
+					bhc4.setIcon(null);
+					bhc4.setVisible(false);
 					System.out.println(hand.get(4).getSuit() + hand.get(4).getRank());
 					passCard(hand.get(4));
 					passedCards.add(4);
-					bhc4.setIcon(null);
-					bhc4.setVisible(false);
 					toPass--;
+					checkUpdate();
 				}
 			}
 		});
@@ -250,12 +255,13 @@ public class Client {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if(toPass > 0){
+					bhc5.setIcon(null);
+					bhc5.setVisible(false);
 					System.out.println(hand.get(5).getSuit() + hand.get(5).getRank());
 					passCard(hand.get(5));
 					passedCards.add(5);
-					bhc5.setIcon(null);
-					bhc5.setVisible(false);
 					toPass--;
+					checkUpdate();
 				}
 			}
 		});
@@ -266,12 +272,13 @@ public class Client {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if(toPass > 0){
+					bhc6.setIcon(null);
+					bhc6.setVisible(false);
 					System.out.println(hand.get(6).getSuit() + hand.get(6).getRank());
 					passCard(hand.get(6));
 					passedCards.add(6);
-					bhc6.setIcon(null);
-					bhc6.setVisible(false);
 					toPass--;
+					checkUpdate();
 				}
 			}
 		});
@@ -282,12 +289,13 @@ public class Client {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if(toPass > 0){
+					bhc7.setIcon(null);
+					bhc7.setVisible(false);
 					System.out.println(hand.get(7).getSuit() + hand.get(7).getRank());
 					passCard(hand.get(7));
 					passedCards.add(7);
-					bhc7.setIcon(null);
-					bhc7.setVisible(false);
 					toPass--;
+					checkUpdate();
 				}
 			}
 		});
@@ -298,12 +306,13 @@ public class Client {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if(toPass > 0){
+					bhc8.setIcon(null);
+					bhc8.setVisible(false);
 					System.out.println(hand.get(8).getSuit() + hand.get(8).getRank());
 					passCard(hand.get(8));
 					passedCards.add(8);
-					bhc8.setIcon(null);
-					bhc8.setVisible(false);
 					toPass--;
+					checkUpdate();
 				}
 			}
 		});
@@ -314,12 +323,13 @@ public class Client {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if(toPass > 0){
+					bhc9.setIcon(null);
+					bhc9.setVisible(false);
 					System.out.println(hand.get(9).getSuit() + hand.get(9).getRank());
 					passCard(hand.get(9));
 					passedCards.add(9);
-					bhc9.setIcon(null);
-					bhc9.setVisible(false);
 					toPass--;
+					checkUpdate();
 				}
 			}
 		});
@@ -330,12 +340,13 @@ public class Client {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if(toPass > 0){
+					bhc10.setIcon(null);
+					bhc10.setVisible(false);
 					System.out.println(hand.get(10).getSuit() + hand.get(10).getRank());
 					passCard(hand.get(10));
 					passedCards.add(10);
-					bhc10.setIcon(null);
-					bhc10.setVisible(false);
 					toPass--;
+					checkUpdate();
 				}
 			}
 		});
@@ -346,12 +357,13 @@ public class Client {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if(toPass > 0){
-					System.out.println(hand.get(11).getSuit() + hand.get(11).getRank());
-					passCard(hand.get(11));
-					passedCards.add(11);
 					bhc11.setIcon(null);
 					bhc11.setVisible(false);
+					System.out.println(hand.get(11).getSuit() + hand.get(11).getRank());
+					passCard(hand.get(11));
+					passedCards.add(11);	
 					toPass--;
+					checkUpdate();
 				}
 			}
 		});
@@ -362,12 +374,13 @@ public class Client {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if(toPass > 0){
+					bhc12.setIcon(null);
+					bhc12.setVisible(false);
 					System.out.println(hand.get(12).getSuit() + hand.get(12).getRank());
 					passCard(hand.get(12));
 					passedCards.add(12);
-					bhc12.setIcon(null);
-					bhc12.setVisible(false);
 					toPass--;
+					checkUpdate();
 				}
 			}
 		});
@@ -462,6 +475,7 @@ public class Client {
 			byte[] receiveData = new byte[1024];
 			
 			while(true){
+				checkUpdate();
 				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
                 try {
 					clientSocket.receive(receivePacket);
@@ -501,27 +515,7 @@ public class Client {
                 		instructionArea.setVisible(true);
                 	}else if(receiveMessage.getTypeOBJMessage().equals("PC")){
                 		passedToMe.add(receiveMessage.getCardOBJMessage());
-                		if(passedToMe.size() == 3){
-                			System.out.println("passed to me:");
-                			for(int i = 0; i < passedToMe.size(); i++){
-                    			System.out.println( passedToMe.get(i).getSuit() +  passedToMe.get(i).getRank());
-                    		}
-                		}
-//                		for (int i = 0; i < hand.size(); i++) {
-//							for(int k = 0; k <passedCards.size(); k++){
-//								if(passedCards.get(k) == i){
-//									Card tempCard = new Card();
-//			                		tempCard = receiveMessage.getCardOBJMessage();
-//			                		hand.get(i).setRank(tempCard.getRank());
-//			                		hand.get(i).setSuit(tempCard.getSuit());
-//			                		hand.get(i).setSpriteURL(tempCard.getSpriteURL());
-//			                		ImageIcon imageIcon = new ImageIcon(receiveMessage.getCardOBJMessage().getSpriteURL());
-//			                		cardLabels.get(i).setIcon(imageIcon);
-//			        		        bottomHandpanel.add( cardLabels.get(Integer.toString(hand.size())), BorderLayout.CENTER );
-//			        		        cardLabels.get(i).setVisible(true);
-//								}
-//							}
-//						}
+                		checkUpdate();
                 	}
                 } catch (ClassNotFoundException e){
                 	e.printStackTrace();
@@ -539,6 +533,26 @@ public class Client {
 		passCardMessage.setCardOBJMessage(card);
 		outMessage = passCardMessage;
 		outThread.run();
+	}
+	public static void checkUpdate(){
+		if(passedToMe.size() == 3 && passedCards.size() == 3){
+			for( int i = 0; i < hand.size(); i++){
+				for( int k = 0; k < passedCards.size(); k++){
+					if(passedCards.get(k) == i){
+						hand.get(passedCards.get(k)).setRank(passedToMe.get(k).getRank());
+						hand.get(passedCards.get(k)).setSuit(passedToMe.get(k).getSuit());
+						hand.get(passedCards.get(k)).setRank(passedToMe.get(k).getSpriteURL());
+						ImageIcon imageIcon = new ImageIcon(passedToMe.get(k).getSpriteURL());
+                		cardLabels.get(Integer.toString(passedCards.get(k)+1)).setIcon(imageIcon);
+        		        bottomHandpanel.add( cardLabels.get(Integer.toString(passedCards.get(k)+1)), BorderLayout.CENTER );
+        		        cardLabels.get(Integer.toString(passedCards.get(k)+1)).setVisible(true);
+        		        passedToMe.remove(k);
+        		        passedCards.remove(k);
+						break;
+					}
+				}
+			}
+		}
 	}
 	
 	public class OutThread extends Thread{
@@ -565,6 +579,7 @@ public class Client {
 				e.printStackTrace();
 			}
 			outMessage = null;
+			checkUpdate();
 		}
 	}
 }
