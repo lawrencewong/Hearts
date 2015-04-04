@@ -37,12 +37,14 @@ public class Servers {
 	static boolean gameRunning;
 	static Integer playersReady = 0;
 	private static messageOBJ outMessage = null;
+	static Integer donePass = 0;
 	
 	// Cards
 	static Card[] deck = new Card[52];
 	static String[] suit = {"S", "H", "C", "D"};
 	static String[] rank = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
-	static String[] instructions = {"Choose three cards from your hand they will be passed to the player on your left. Wait for your cards to be passed."};
+	static String[] instructions = {"Choose three cards from your hand they will be passed to the player on your left. Wait for your cards to be passed.",
+									"Player with the 2 of clubs will start the round."};
 	
 	/**
 	 * Launch the application.
@@ -130,6 +132,7 @@ public class Servers {
 						}
 					}
 	        	}else if(receiveMessageOBJ.getTypeOBJMessage().equals("PC")){ // Passing a card
+	        		donePass++;
 	        		for(int i = 0; i < clientInfoList.size(); i++){
 						if(clientInfoList.get(i).getUsernameCI().equals(receiveMessageOBJ.getUsernameOBJMessage())){
 							if(clientInfoList.get(i).getSeatingCI() == 1){
@@ -187,6 +190,14 @@ public class Servers {
 	        	if(clientInfoList.size() == 4){
 	        		if(gameRunning == true){
 	        			serverLogtextArea.append("Game in process.\n");
+	        			if(donePass == 12){
+	        				serverLogtextArea.append("Done passing.\n");
+	        				for(int i=0; i <clientInfoList.size(); i++){
+		        				sendInstructions(clientInfoList.get(i), 1);
+		        			}	    
+	        				
+	        			}
+	        			    
 	        		}else if(gameRunning == false && playersReady == 4){
 	        			gameRunning = true;
 	        			serverLogtextArea.append("All players ready and seated. Commence game! \n");
@@ -200,21 +211,10 @@ public class Servers {
 	        				}
 	        	        }
 	        			
+	        			// First instruction
 	        			for(int i=0; i <clientInfoList.size(); i++){
 	        				sendInstructions(clientInfoList.get(i), 0);
-	        			}
-	        			
-	        			// Print hands
-	        			for( int j =0; j <clientInfoList.size(); j++ ){
-	        				serverLogtextArea.append(clientInfoList.get(j).getUsernameCI() + " HAS: \n");
-        					for(int k=0; k<clientInfoList.get(j).getHand().size(); k++){
-        						serverLogtextArea.append(clientInfoList.get(j).getHand().get(k).getSuit() + clientInfoList.get(j).getHand().get(k).getRank() + " ");
-        					}
-        					serverLogtextArea.append("\n");
-        				}
-	        			
-	        			
-	        			
+	        			}	        		
 	        		}
 	        	}
 	        	

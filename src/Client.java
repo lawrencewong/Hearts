@@ -81,10 +81,59 @@ public class Client {
 	private JLabel bhc11;
 	private JLabel bhc12;
 	private JLabel bhc3;
+	private JLabel lhc0;
+	private JLabel lhc1;
+	private JLabel lhc2;
+	private JLabel lhc3;
+	private JLabel lhc4;
+	private JLabel lhc5;
+	private JLabel lhc6;
+	private JLabel lhc7;
+	private JLabel lhc8;
+	private JLabel lhc9;
+	private JLabel lhc10;
+	private JLabel lhc11;
+	private JLabel lhc12;
+	private JLabel rhc12;
+	private JLabel rhc11;
+	private JLabel rhc10;
+	private JLabel rhc9;
+	private JLabel rhc8;
+	private JLabel rhc7;
+	private JLabel rhc6;
+	private JLabel rhc5;
+	private JLabel rhc4;
+	private JLabel rhc3;
+	private JLabel rhc2;
+	private JLabel rhc1;
+	private JLabel rhc0;
+	private JLabel thc12;
+	private JLabel thc11;
+	private JLabel thc10;
+	private JLabel thc9;
+	private JLabel thc8;
+	private JLabel thc7;
+	private JLabel thc6;
+	private JLabel thc5;
+	private JLabel thc4;
+	private JLabel thc3;
+	private JLabel thc2;
+	private JLabel thc1;
+	private JLabel thc0;
+	private JLabel lc;
+	private JLabel rc;
+	private JLabel bc;
+	private JLabel tc;
 	private JTextArea instructionArea;
 	private static HashMap<String, JLabel> cardLabels = new HashMap<String, JLabel>();
-	private int toPass = 3;
+	private static HashMap<String, JLabel> cardLeftLabels = new HashMap<String, JLabel>();
+	private static HashMap<String, JLabel> cardRightLabels = new HashMap<String, JLabel>();
+	private static HashMap<String, JLabel> cardTopLabels = new HashMap<String, JLabel>();
 	
+	private int toPass = 3;
+
+
+
 	public Client(String serverIP, String clientUsername) throws IOException {
 		IPAddress  = InetAddress.getByName(serverIP);
 		clientName = clientUsername;
@@ -386,48 +435,181 @@ public class Client {
 		});
 		bottomHandpanel.add(bhc12);
 		
-		cardLabels.put("1", bhc0);
-		cardLabels.put("2", bhc1);
-		cardLabels.put("3", bhc2);
-		cardLabels.put("4", bhc3);
-		cardLabels.put("5", bhc4);
-		cardLabels.put("6", bhc5);
-		cardLabels.put("7", bhc6);
-		cardLabels.put("8", bhc7);
-		cardLabels.put("9", bhc8);
-		cardLabels.put("10", bhc9);
-		cardLabels.put("11", bhc10);
-		cardLabels.put("12", bhc11);
-		cardLabels.put("13", bhc12);
-		
 		leftHandpanel = new JPanel();
+		leftHandpanel.setBackground(new Color(0, 100, 0));
 		leftHandpanel.setBounds(10, 29, 100, 600);
 		frame.getContentPane().add(leftHandpanel);
+		leftHandpanel.setLayout(new GridLayout(13, 1, 0, 0));
+		
+		lhc0 = new JLabel("");
+		leftHandpanel.add(lhc0);
+		
+		lhc1 = new JLabel("");
+		leftHandpanel.add(lhc1);
+		
+		lhc2 = new JLabel("");
+		leftHandpanel.add(lhc2);
+		
+		lhc3 = new JLabel("");
+		leftHandpanel.add(lhc3);
+		
+		lhc4 = new JLabel("");
+		leftHandpanel.add(lhc4);
+		
+		lhc5 = new JLabel("");
+		leftHandpanel.add(lhc5);
+		
+		lhc6 = new JLabel("");
+		leftHandpanel.add(lhc6);
+		
+		lhc7 = new JLabel("");
+		leftHandpanel.add(lhc7);
+		
+		lhc8 = new JLabel("");
+		leftHandpanel.add(lhc8);
+		
+		lhc9 = new JLabel("");
+		leftHandpanel.add(lhc9);
+		
+		lhc10 = new JLabel("");
+		leftHandpanel.add(lhc10);
+		
+		lhc11 = new JLabel("");
+		leftHandpanel.add(lhc11);
+		
+		lhc12 = new JLabel("");
+		leftHandpanel.add(lhc12);
 		
 		rightHandPanel = new JPanel();
+		rightHandPanel.setBackground(new Color(0, 100, 0));
 		rightHandPanel.setBounds(1010, 29, 100, 600);
 		frame.getContentPane().add(rightHandPanel);
+		rightHandPanel.setLayout(new GridLayout(13, 1, 0, 0));
+		
+		rhc12 = new JLabel("");
+		rightHandPanel.add(rhc12);
+		
+		rhc11 = new JLabel("");
+		rightHandPanel.add(rhc11);
+		
+		rhc10 = new JLabel("");
+		rightHandPanel.add(rhc10);
+		
+		rhc9 = new JLabel("");
+		rightHandPanel.add(rhc9);
+		
+		rhc8 = new JLabel("");
+		rightHandPanel.add(rhc8);
+		
+		rhc7 = new JLabel("");
+		rightHandPanel.add(rhc7);
+		
+		rhc6 = new JLabel("");
+		rightHandPanel.add(rhc6);
+		
+		rhc5 = new JLabel("");
+		rightHandPanel.add(rhc5);
+		
+		rhc4 = new JLabel("");
+		rightHandPanel.add(rhc4);
+		
+		rhc3 = new JLabel("");
+		rightHandPanel.add(rhc3);
+		
+		rhc2 = new JLabel("");
+		rightHandPanel.add(rhc2);
+		
+		rhc1 = new JLabel("");
+		rightHandPanel.add(rhc1);
+		
+		rhc0 = new JLabel("");
+		rightHandPanel.add(rhc0);
 		
 		topHandpanel = new JPanel();
+		topHandpanel.setBackground(new Color(0, 100, 0));
 		topHandpanel.setBounds(235, 11, 600, 100);
 		frame.getContentPane().add(topHandpanel);
+		topHandpanel.setLayout(new GridLayout(0, 13, 0, 0));
+		
+		thc12 = new JLabel("");
+		topHandpanel.add(thc12);
+		
+		thc11 = new JLabel("");
+		topHandpanel.add(thc11);
+		
+		thc10 = new JLabel("");
+		topHandpanel.add(thc10);
+		
+		thc9 = new JLabel("");
+		topHandpanel.add(thc9);
+		
+		thc8 = new JLabel("");
+		topHandpanel.add(thc8);
+		
+		thc7 = new JLabel("");
+		topHandpanel.add(thc7);
+		
+		thc6 = new JLabel("");
+		topHandpanel.add(thc6);
+		
+		thc5 = new JLabel("");
+		topHandpanel.add(thc5);
+		
+		thc4 = new JLabel("");
+		topHandpanel.add(thc4);
+		
+		thc3 = new JLabel("");
+		topHandpanel.add(thc3);
+		
+		thc2 = new JLabel("");
+		topHandpanel.add(thc2);
+		
+		thc1 = new JLabel("");
+		topHandpanel.add(thc1);
+		
+		thc0 = new JLabel("");
+		topHandpanel.add(thc0);
 		
 		leftCardPanel = new JPanel();
+		leftCardPanel.setBackground(new Color(0, 100, 0));
 		leftCardPanel.setBounds(336, 246, 85, 135);
 		frame.getContentPane().add(leftCardPanel);
+		leftCardPanel.setLayout(new GridLayout(1, 0, 0, 0));
+		
+		lc = new JLabel("");
+		leftCardPanel.add(lc);
 		
 		rightCardPanel = new JPanel();
+		rightCardPanel.setBackground(new Color(0, 100, 0));
 		rightCardPanel.setBounds(641, 246, 85, 135);
 		frame.getContentPane().add(rightCardPanel);
+		rightCardPanel.setLayout(new GridLayout(1, 0, 0, 0));
+		
+		rc = new JLabel("");
+		rc.setForeground(new Color(0, 100, 0));
+		rc.setBackground(new Color(0, 100, 0));
+		rightCardPanel.add(rc);
 		
 		bottomCardPanel = new JPanel();
+		bottomCardPanel.setBackground(new Color(0, 100, 0));
 		bottomCardPanel.setBounds(491, 368, 85, 135);
 		frame.getContentPane().add(bottomCardPanel);
+		bottomCardPanel.setLayout(new GridLayout(1, 0, 0, 0));
+		
+		bc = new JLabel("");
+		bottomCardPanel.add(bc);
 		bottomHandpanel.setVisible(false);
 		
 		topCardPanel = new JPanel();
+		topCardPanel.setBackground(new Color(0, 100, 0));
 		topCardPanel.setBounds(491, 161, 85, 135);
 		frame.getContentPane().add(topCardPanel);
+		topCardPanel.setLayout(new GridLayout(1, 0, 0, 0));
+		
+		tc = new JLabel("");
+		tc.setForeground(new Color(0, 100, 0));
+		tc.setBackground(new Color(0, 100, 0));
+		topCardPanel.add(tc);
 		
 		lblIn = new JLabel("Instructions");
 		lblIn.setForeground(Color.WHITE);
@@ -466,6 +648,62 @@ public class Client {
 		frame.setBounds(100, 100, 1136, 734);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
+		
+		cardLabels.put("1", bhc0);
+		cardLabels.put("2", bhc1);
+		cardLabels.put("3", bhc2);
+		cardLabels.put("4", bhc3);
+		cardLabels.put("5", bhc4);
+		cardLabels.put("6", bhc5);
+		cardLabels.put("7", bhc6);
+		cardLabels.put("8", bhc7);
+		cardLabels.put("9", bhc8);
+		cardLabels.put("10", bhc9);
+		cardLabels.put("11", bhc10);
+		cardLabels.put("12", bhc11);
+		cardLabels.put("13", bhc12);
+		
+		cardTopLabels.put("1", thc0);
+		cardTopLabels.put("2", thc1);
+		cardTopLabels.put("3", thc2);
+		cardTopLabels.put("4", thc3);
+		cardTopLabels.put("5", thc4);
+		cardTopLabels.put("6", thc5);
+		cardTopLabels.put("7", thc6);
+		cardTopLabels.put("8", thc7);
+		cardTopLabels.put("9", thc8);
+		cardTopLabels.put("10", thc9);
+		cardTopLabels.put("11", thc10);
+		cardTopLabels.put("12", thc11);
+		cardTopLabels.put("13", thc12);
+		
+		cardRightLabels.put("1", rhc0);
+		cardRightLabels.put("2", rhc1);
+		cardRightLabels.put("3", rhc2);
+		cardRightLabels.put("4", rhc3);
+		cardRightLabels.put("5", rhc4);
+		cardRightLabels.put("6", rhc5);
+		cardRightLabels.put("7", rhc6);
+		cardRightLabels.put("8", rhc7);
+		cardRightLabels.put("9", rhc8);
+		cardRightLabels.put("10", rhc9);
+		cardRightLabels.put("11", rhc10);
+		cardRightLabels.put("12", rhc11);
+		cardRightLabels.put("13", rhc12);
+		
+		cardLeftLabels.put("1", lhc0);
+		cardLeftLabels.put("2", lhc1);
+		cardLeftLabels.put("3", lhc2);
+		cardLeftLabels.put("4", lhc3);
+		cardLeftLabels.put("5", lhc4);
+		cardLeftLabels.put("6", lhc5);
+		cardLeftLabels.put("7", lhc6);
+		cardLeftLabels.put("8", lhc7);
+		cardLeftLabels.put("9", lhc8);
+		cardLeftLabels.put("10", lhc9);
+		cardLeftLabels.put("11", lhc10);
+		cardLeftLabels.put("12", lhc11);
+		cardLeftLabels.put("13", lhc12);
 
 		
 	}
@@ -506,9 +744,26 @@ public class Client {
                 		Card tempCard = new Card();
                 		tempCard = receiveMessage.getCardOBJMessage();
                 		hand.add(tempCard);
+                		Integer index = hand.size();
                 		ImageIcon imageIcon = new ImageIcon(receiveMessage.getCardOBJMessage().getSpriteURL());
-                		cardLabels.get(Integer.toString(hand.size())).setIcon(imageIcon);
-        		        bottomHandpanel.add( cardLabels.get(Integer.toString(hand.size())), BorderLayout.CENTER );
+                		cardLabels.get(index.toString()).setIcon(imageIcon);
+        		        bottomHandpanel.add( cardLabels.get(index.toString()), BorderLayout.CENTER );
+        		        
+        		        File f = new File("sprites\\bh.png");
+        		        if(f.exists() && !f.isDirectory()) { System.out.println("YEP"); }
+        		        
+        		        ImageIcon imageRightIcon = new ImageIcon("sprites\\bh.png");
+                		cardRightLabels.get(index.toString()).setIcon(imageRightIcon);
+        		        rightHandPanel.add( cardRightLabels.get(index.toString()), BorderLayout.CENTER );
+        		        
+        		        ImageIcon imageLeftIcon = new ImageIcon("sprites\\bh.png");
+                		cardLeftLabels.get(index.toString()).setIcon(imageLeftIcon);
+        		        leftHandpanel.add( cardLeftLabels.get(index.toString()), BorderLayout.CENTER );
+        		        
+        		        ImageIcon imageTopIcon = new ImageIcon("sprites\\bv.png");
+                		cardTopLabels.get(index.toString()).setIcon(imageTopIcon);
+        		        topHandpanel.add( cardTopLabels.get(index.toString()), BorderLayout.CENTER );
+        		        
                 	}else if(receiveMessage.getTypeOBJMessage().equals("IN")){
                 		instructionArea.setText(receiveMessage.getMessageOBJMessage());
                 		lblIn.setVisible(true);
