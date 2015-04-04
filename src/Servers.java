@@ -42,6 +42,7 @@ public class Servers {
 	static Card[] deck = new Card[52];
 	static String[] suit = {"S", "H", "C", "D"};
 	static String[] rank = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+	static String[] instructions = {"Choose three cards from your hand they will be passed to the player on your left."};
 	
 	/**
 	 * Launch the application.
@@ -145,18 +146,22 @@ public class Servers {
 	        						break;
 	        					}
 	        				}
-	        				
 	        	        }
+	        			
+	        			for(int i=0; i <clientInfoList.size(); i++){
+	        				sendInstructions(clientInfoList.get(i), 0);
+	        			}
 	        			
 	        			// Print hands
 	        			for( int j =0; j <clientInfoList.size(); j++ ){
-	        				
 	        				serverLogtextArea.append(j + " HAS: \n");
         					for(int k=0; k<clientInfoList.get(j).getHand().size(); k++){
         						serverLogtextArea.append(clientInfoList.get(j).getHand().get(k).getSuit() + clientInfoList.get(j).getHand().get(k).getRank() + " ");
         					}
         					serverLogtextArea.append("\n");
         				}
+	        			
+	        			
 	        			
 	        		}
 	        	}
@@ -232,6 +237,17 @@ public class Servers {
 		dealCardMessage.setUsernameOBJMessage(client.getUsernameCI());
 		dealCardMessage.setCardOBJMessage(card);
 		outMessage = dealCardMessage;
+		sendClientObject(client);
+	}
+	
+	public static void sendInstructions( clientInformation client,  Integer id){
+		serverLogtextArea.append("Sending instruction by id: "  + id + " to " + client.getUsernameCI() + "\n");
+		messageOBJ instructionMessage = new messageOBJ();
+		instructionMessage.setTypeOBJMessage("IN");
+		instructionMessage.setMessageOBJMessage(instructions[id]);
+		instructionMessage.setUsernameOBJMessage(client.getUsernameCI());
+		instructionMessage.setCardOBJMessage(null);
+		outMessage = instructionMessage;
 		sendClientObject(client);
 	}
 	

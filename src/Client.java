@@ -77,6 +77,7 @@ public class Client {
 	private JLabel bhc11;
 	private JLabel bhc12;
 	private JLabel bhc3;
+	private JTextArea instructionArea;
 	private HashMap<String, JLabel> cardLabels = new HashMap<String, JLabel>();
 	
 	public Client(String serverIP, String clientUsername) throws IOException {
@@ -245,6 +246,7 @@ public class Client {
 		lblIn.setForeground(Color.WHITE);
 		lblIn.setBounds(138, 368, 76, 39);
 		frame.getContentPane().add(lblIn);
+		lblIn.setVisible(false);
 		
 		leftNameAndScore = new JLabel("");
 		leftNameAndScore.setForeground(Color.WHITE);
@@ -266,11 +268,14 @@ public class Client {
 		bottomNameAndScore.setBounds(431, 534, 200, 39);
 		frame.getContentPane().add(bottomNameAndScore);
 		
-		JTextArea textArea = new JTextArea();
-		textArea.setForeground(Color.WHITE);
-		textArea.setBackground(new Color(0, 100, 0));
-		textArea.setBounds(138, 407, 275, 166);
-		frame.getContentPane().add(textArea);
+		instructionArea = new JTextArea();
+		instructionArea.setWrapStyleWord(true);
+		instructionArea.setLineWrap(true);
+		instructionArea.setForeground(Color.WHITE);
+		instructionArea.setBackground(new Color(0, 100, 0));
+		instructionArea.setBounds(138, 407, 275, 166);
+		instructionArea.setVisible(false);
+		frame.getContentPane().add(instructionArea);
 		frame.setBounds(100, 100, 1136, 734);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
@@ -309,17 +314,16 @@ public class Client {
                 		lblRoomFullSorry.setVisible(true);
                 		btnExit.setVisible(true);
                 	}else if(receiveMessage.getTypeOBJMessage().equals("DC")){
-                		System.out.println("GOT: " + receiveMessage.getCardOBJMessage().getSpriteURL());
                 		Card tempCard = new Card();
                 		tempCard = receiveMessage.getCardOBJMessage();
                 		hand.add(tempCard);
-                		System.out.println(Integer.toString(hand.size()));
                 		ImageIcon imageIcon = new ImageIcon(receiveMessage.getCardOBJMessage().getSpriteURL());
-                		//JLabel tempLabel = new JLabel("", imageIcon, JLabel.CENTER);
                 		cardLabels.get(Integer.toString(hand.size())).setIcon(imageIcon);
-                		
-//                		bhc0.setIcon(imageIcon);
         		        bottomHandpanel.add( cardLabels.get(Integer.toString(hand.size())), BorderLayout.CENTER );
+                	}else if(receiveMessage.getTypeOBJMessage().equals("IN")){
+                		instructionArea.setText(receiveMessage.getMessageOBJMessage());
+                		lblIn.setVisible(true);
+                		instructionArea.setVisible(true);
                 	}
                 } catch (ClassNotFoundException e){
                 	e.printStackTrace();

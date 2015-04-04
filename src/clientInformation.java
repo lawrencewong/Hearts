@@ -9,6 +9,8 @@ public class clientInformation {
 	private boolean ready;
 	private int seating;
 	private ArrayList<Card> hand = new ArrayList<Card>();
+	private int currentPoints;
+	private int gamePoints;
 	
 	public clientInformation(){
 		username = null;
@@ -16,6 +18,8 @@ public class clientInformation {
 		port = 0;
 		ready = false;
 		seating = 0;
+		currentPoints = 0;
+		gamePoints = 0;
 	}
 	
 	public void setUsernameCI(String clientName){
@@ -36,6 +40,14 @@ public class clientInformation {
 	
 	public void setSeatingCI(int i){
 		seating = i;
+	}
+	
+	public void setCurrentPointsCI(int points){
+		currentPoints = points;
+	}
+	
+	public void setGamePointsCI(int points){
+		gamePoints = points;
 	}
 	
 	public String getUsernameCI(){
@@ -74,6 +86,14 @@ public class clientInformation {
 				 hand.remove(i);
 			}
 		}
+	}
+	
+	public int getCurrentPointsCI(){
+		return currentPoints;
+	}
+	
+	public int getGamePointsCI(){
+		return gamePoints;
 	}
 
 }
