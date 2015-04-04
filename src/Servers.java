@@ -140,9 +140,7 @@ public class Servers {
 	        			shuffleDeck();
 	        			for(int i = 0; i < deck.length; i++){
 	        				for( int j =0; j <clientInfoList.size(); j++ ){
-	        					System.out.println(clientInfoList.get(j).getSeatingCI() + " " + j + " " + i%4 +1);
 	        					if(clientInfoList.get(j).getSeatingCI() == i%4 + 1){
-	        						System.out.println(deck[i].getSuit() + deck[i].getRank() + " " +deck[i].getSpriteURL() + " DEAL TO: " + j +" "+ clientInfoList.get(j).getUsernameCI() +"\n");
 	        						dealCard(clientInfoList.get(j), deck[i]);
 	        						break;
 	        					}
@@ -226,15 +224,15 @@ public class Servers {
 	}
 	
 	public static void dealCard( clientInformation client, Card card){
-		System.out.println("Dealing" + card.getSuit() + card.getRank() + " to " + client.getUsernameCI());
+		serverLogtextArea.append("Dealing "  + card.getSuit() + card.getRank() + " to " + client.getUsernameCI() + " SEAT: " + client.getSeatingCI() + "\n");
 		client.dealToHandCI(card);
-//		messageOBJ gameFullMessage = new messageOBJ();
-//		gameFullMessage.setTypeOBJMessage("DC");
-//		gameFullMessage.setMessageOBJMessage("");
-//		gameFullMessage.setUsernameOBJMessage(client.getUsernameCI());
-//		outMessage = gameFullMessage;
-//		serverLogtextArea.append("Notifying " + client.getUsernameCI() + " game room is full.\n");
-//		sendClientObject(client);
+		messageOBJ dealCardMessage = new messageOBJ();
+		dealCardMessage.setTypeOBJMessage("DC");
+		dealCardMessage.setMessageOBJMessage("");
+		dealCardMessage.setUsernameOBJMessage(client.getUsernameCI());
+		dealCardMessage.setCardOBJMessage(card);
+		outMessage = dealCardMessage;
+		sendClientObject(client);
 	}
 	
 	public static void shuffleDeck(){
