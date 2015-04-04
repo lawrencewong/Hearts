@@ -51,6 +51,7 @@ public class Client {
 	private JFrame frame;
 	JButton btnReady;
 	JLabel readylabel;
+	String twoOfClubs = "C2";
 	static String clientName;
 	private static messageOBJ outMessage = null;
 	private JLabel lblRoomFullSorry;
@@ -129,6 +130,8 @@ public class Client {
 	private static HashMap<String, JLabel> cardLeftLabels = new HashMap<String, JLabel>();
 	private static HashMap<String, JLabel> cardRightLabels = new HashMap<String, JLabel>();
 	private static HashMap<String, JLabel> cardTopLabels = new HashMap<String, JLabel>();
+	private static Boolean myTurn = false;
+	private static Boolean firstTurn = false;
 	
 	private int toPass = 3;
 
@@ -221,11 +224,30 @@ public class Client {
 				if(toPass > 0){
 					bhc0.setIcon(null);
 					bhc0.setVisible(false);
-					System.out.println(hand.get(0).getSuit() + hand.get(0).getRank());
 					passCard(hand.get(0));
 					passedCards.add(0);
 					toPass--;
 					checkUpdate();
+				}else if(myTurn){
+					if(firstTurn){
+						if(twoOfClubs.equals(hand.get(0).getSuit() + hand.get(0).getRank())){
+							bhc0.setIcon(null);
+							bhc0.setVisible(false);
+							playCard(hand.get(0));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(0).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}
+					}else{
+						bhc0.setIcon(null);
+						bhc0.setVisible(false);
+						playCard(hand.get(0));
+						ImageIcon imageTopIcon = new ImageIcon(hand.get(0).getSpriteURL());
+						bc.setIcon(imageTopIcon);
+						bottomCardPanel.add( bc, BorderLayout.CENTER );
+						bottomCardPanel.setVisible(true);
+					}
 				}
 			}
 		});
@@ -238,11 +260,30 @@ public class Client {
 				if(toPass > 0){
 					bhc1.setIcon(null);
 					bhc1.setVisible(false);
-					System.out.println(hand.get(1).getSuit() + hand.get(1).getRank());
 					passCard(hand.get(1));
 					passedCards.add(1);
 					toPass--;
 					checkUpdate();
+				}else if(myTurn){
+					if(firstTurn){
+						if(twoOfClubs.equals(hand.get(1).getSuit() + hand.get(1).getRank())){
+							bhc1.setIcon(null);
+							bhc1.setVisible(false);
+							playCard(hand.get(1));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(1).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}
+					}else{
+						bhc1.setIcon(null);
+						bhc1.setVisible(false);
+						playCard(hand.get(1));
+						ImageIcon imageTopIcon = new ImageIcon(hand.get(1).getSpriteURL());
+						bc.setIcon(imageTopIcon);
+						bottomCardPanel.add( bc, BorderLayout.CENTER );
+						bottomCardPanel.setVisible(true);
+					}
 				}
 			}
 		});
@@ -260,6 +301,26 @@ public class Client {
 					passedCards.add(2);
 					toPass--;
 					checkUpdate();
+				}else if(myTurn){
+					if(firstTurn){
+						if(twoOfClubs.equals(hand.get(2).getSuit() + hand.get(2).getRank())){
+							bhc2.setIcon(null);
+							bhc2.setVisible(false);
+							playCard(hand.get(2));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(2).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}
+					}else{
+						bhc2.setIcon(null);
+						bhc2.setVisible(false);
+						playCard(hand.get(2));
+						ImageIcon imageTopIcon = new ImageIcon(hand.get(2).getSpriteURL());
+						bc.setIcon(imageTopIcon);
+						bottomCardPanel.add( bc, BorderLayout.CENTER );
+						bottomCardPanel.setVisible(true);
+					}
 				}
 			}
 		});
@@ -277,6 +338,26 @@ public class Client {
 					passedCards.add(3);
 					toPass--;
 					checkUpdate();
+				}else if(myTurn){
+					if(firstTurn){
+						if(twoOfClubs.equals(hand.get(3).getSuit() + hand.get(3).getRank())){
+							bhc3.setIcon(null);
+							bhc3.setVisible(false);
+							playCard(hand.get(3));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(3).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}
+					}else{
+						bhc3.setIcon(null);
+						bhc3.setVisible(false);
+						playCard(hand.get(3));
+						ImageIcon imageTopIcon = new ImageIcon(hand.get(3).getSpriteURL());
+						bc.setIcon(imageTopIcon);
+						bottomCardPanel.add( bc, BorderLayout.CENTER );
+						bottomCardPanel.setVisible(true);
+					}
 				}
 			}
 		});
@@ -294,6 +375,26 @@ public class Client {
 					passedCards.add(4);
 					toPass--;
 					checkUpdate();
+				}else if(myTurn){
+					if(firstTurn){
+						if(twoOfClubs.equals(hand.get(4).getSuit() + hand.get(4).getRank())){
+							bhc4.setIcon(null);
+							bhc4.setVisible(false);
+							playCard(hand.get(4));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(4).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}
+					}else{
+						bhc4.setIcon(null);
+						bhc4.setVisible(false);
+						playCard(hand.get(4));
+						ImageIcon imageTopIcon = new ImageIcon(hand.get(4).getSpriteURL());
+						bc.setIcon(imageTopIcon);
+						bottomCardPanel.add( bc, BorderLayout.CENTER );
+						bottomCardPanel.setVisible(true);
+					}
 				}
 			}
 		});
@@ -311,6 +412,26 @@ public class Client {
 					passedCards.add(5);
 					toPass--;
 					checkUpdate();
+				}else if(myTurn){
+					if(firstTurn){
+						if(twoOfClubs.equals(hand.get(5).getSuit() + hand.get(5).getRank())){
+							bhc5.setIcon(null);
+							bhc5.setVisible(false);
+							playCard(hand.get(5));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(5).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}
+					}else{
+						bhc5.setIcon(null);
+						bhc5.setVisible(false);
+						playCard(hand.get(5));
+						ImageIcon imageTopIcon = new ImageIcon(hand.get(5).getSpriteURL());
+						bc.setIcon(imageTopIcon);
+						bottomCardPanel.add( bc, BorderLayout.CENTER );
+						bottomCardPanel.setVisible(true);
+					}
 				}
 			}
 		});
@@ -328,6 +449,26 @@ public class Client {
 					passedCards.add(6);
 					toPass--;
 					checkUpdate();
+				}else if(myTurn){
+					if(firstTurn){
+						if(twoOfClubs.equals(hand.get(6).getSuit() + hand.get(6).getRank())){
+							bhc6.setIcon(null);
+							bhc6.setVisible(false);
+							playCard(hand.get(6));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(6).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}
+					}else{
+						bhc6.setIcon(null);
+						bhc6.setVisible(false);
+						playCard(hand.get(6));
+						ImageIcon imageTopIcon = new ImageIcon(hand.get(6).getSpriteURL());
+						bc.setIcon(imageTopIcon);
+						bottomCardPanel.add( bc, BorderLayout.CENTER );
+						bottomCardPanel.setVisible(true);
+					}
 				}
 			}
 		});
@@ -345,6 +486,26 @@ public class Client {
 					passedCards.add(7);
 					toPass--;
 					checkUpdate();
+				}else if(myTurn){
+					if(firstTurn){
+						if(twoOfClubs.equals(hand.get(7).getSuit() + hand.get(7).getRank())){
+							bhc7.setIcon(null);
+							bhc7.setVisible(false);
+							playCard(hand.get(7));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(7).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}
+					}else{
+						bhc7.setIcon(null);
+						bhc7.setVisible(false);
+						playCard(hand.get(7));
+						ImageIcon imageTopIcon = new ImageIcon(hand.get(7).getSpriteURL());
+						bc.setIcon(imageTopIcon);
+						bottomCardPanel.add( bc, BorderLayout.CENTER );
+						bottomCardPanel.setVisible(true);
+					}
 				}
 			}
 		});
@@ -362,6 +523,26 @@ public class Client {
 					passedCards.add(8);
 					toPass--;
 					checkUpdate();
+				}else if(myTurn){
+					if(firstTurn){
+						if(twoOfClubs.equals(hand.get(8).getSuit() + hand.get(8).getRank())){
+							bhc8.setIcon(null);
+							bhc8.setVisible(false);
+							playCard(hand.get(8));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(8).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}
+					}else{
+						bhc8.setIcon(null);
+						bhc8.setVisible(false);
+						playCard(hand.get(8));
+						ImageIcon imageTopIcon = new ImageIcon(hand.get(8).getSpriteURL());
+						bc.setIcon(imageTopIcon);
+						bottomCardPanel.add( bc, BorderLayout.CENTER );
+						bottomCardPanel.setVisible(true);
+					}
 				}
 			}
 		});
@@ -379,6 +560,26 @@ public class Client {
 					passedCards.add(9);
 					toPass--;
 					checkUpdate();
+				}else if(myTurn){
+					if(firstTurn){
+						if(twoOfClubs.equals(hand.get(9).getSuit() + hand.get(9).getRank())){
+							bhc9.setIcon(null);
+							bhc9.setVisible(false);
+							playCard(hand.get(9));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(9).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}
+					}else{
+						bhc9.setIcon(null);
+						bhc9.setVisible(false);
+						playCard(hand.get(9));
+						ImageIcon imageTopIcon = new ImageIcon(hand.get(9).getSpriteURL());
+						bc.setIcon(imageTopIcon);
+						bottomCardPanel.add( bc, BorderLayout.CENTER );
+						bottomCardPanel.setVisible(true);
+					}
 				}
 			}
 		});
@@ -396,6 +597,26 @@ public class Client {
 					passedCards.add(10);
 					toPass--;
 					checkUpdate();
+				}else if(myTurn){
+					if(firstTurn){
+						if(twoOfClubs.equals(hand.get(10).getSuit() + hand.get(10).getRank())){
+							bhc10.setIcon(null);
+							bhc10.setVisible(false);
+							playCard(hand.get(10));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(10).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}
+					}else{
+						bhc10.setIcon(null);
+						bhc10.setVisible(false);
+						playCard(hand.get(10));
+						ImageIcon imageTopIcon = new ImageIcon(hand.get(10).getSpriteURL());
+						bc.setIcon(imageTopIcon);
+						bottomCardPanel.add( bc, BorderLayout.CENTER );
+						bottomCardPanel.setVisible(true);
+					}
 				}
 			}
 		});
@@ -413,6 +634,26 @@ public class Client {
 					passedCards.add(11);	
 					toPass--;
 					checkUpdate();
+				}else if(myTurn){
+					if(firstTurn){
+						if(twoOfClubs.equals(hand.get(11).getSuit() + hand.get(11).getRank())){
+							bhc11.setIcon(null);
+							bhc11.setVisible(false);
+							playCard(hand.get(11));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(11).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}
+					}else{
+						bhc11.setIcon(null);
+						bhc11.setVisible(false);
+						playCard(hand.get(11));
+						ImageIcon imageTopIcon = new ImageIcon(hand.get(11).getSpriteURL());
+						bc.setIcon(imageTopIcon);
+						bottomCardPanel.add( bc, BorderLayout.CENTER );
+						bottomCardPanel.setVisible(true);
+					}
 				}
 			}
 		});
@@ -430,6 +671,26 @@ public class Client {
 					passedCards.add(12);
 					toPass--;
 					checkUpdate();
+				}else if(myTurn){
+					if(firstTurn){
+						if(twoOfClubs.equals(hand.get(12).getSuit() + hand.get(12).getRank())){
+							bhc12.setIcon(null);
+							bhc12.setVisible(false);
+							playCard(hand.get(12));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(12).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}
+					}else{
+						bhc12.setIcon(null);
+						bhc12.setVisible(false);
+						playCard(hand.get(12));
+						ImageIcon imageTopIcon = new ImageIcon(hand.get(12).getSpriteURL());
+						bc.setIcon(imageTopIcon);
+						bottomCardPanel.add( bc, BorderLayout.CENTER );
+						bottomCardPanel.setVisible(true);
+					}
 				}
 			}
 		});
@@ -749,9 +1010,6 @@ public class Client {
                 		cardLabels.get(index.toString()).setIcon(imageIcon);
         		        bottomHandpanel.add( cardLabels.get(index.toString()), BorderLayout.CENTER );
         		        
-        		        File f = new File("sprites\\bh.png");
-        		        if(f.exists() && !f.isDirectory()) { System.out.println("YEP"); }
-        		        
         		        ImageIcon imageRightIcon = new ImageIcon("sprites\\bh.png");
                 		cardRightLabels.get(index.toString()).setIcon(imageRightIcon);
         		        rightHandPanel.add( cardRightLabels.get(index.toString()), BorderLayout.CENTER );
@@ -771,6 +1029,9 @@ public class Client {
                 	}else if(receiveMessage.getTypeOBJMessage().equals("PC")){
                 		passedToMe.add(receiveMessage.getCardOBJMessage());
                 		checkUpdate();
+                	}else if(receiveMessage.getTypeOBJMessage().equals("FC")){
+                		firstTurn = true;
+                		myTurn = true;
                 	}
                 } catch (ClassNotFoundException e){
                 	e.printStackTrace();
@@ -780,6 +1041,17 @@ public class Client {
 			}
 		}
 	}
+	
+	public static void playCard(Card card){
+		messageOBJ passCardMessage = new messageOBJ();
+		passCardMessage.setTypeOBJMessage("LC");
+		passCardMessage.setMessageOBJMessage("");
+		passCardMessage.setUsernameOBJMessage(clientName);
+		passCardMessage.setCardOBJMessage(card);
+		outMessage = passCardMessage;
+		outThread.run();
+	}
+	
 	public static void passCard(Card card){
 		messageOBJ passCardMessage = new messageOBJ();
 		passCardMessage.setTypeOBJMessage("PC");

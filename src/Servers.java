@@ -38,6 +38,7 @@ public class Servers {
 	static Integer playersReady = 0;
 	private static messageOBJ outMessage = null;
 	static Integer donePass = 0;
+	static Integer roundNumber = 0;
 	
 	// Cards
 	static Card[] deck = new Card[52];
@@ -174,7 +175,10 @@ public class Servers {
 							}
 						}
 					}
+	        	}else if(receiveMessageOBJ.getTypeOBJMessage().equals("LC")){ // Passing a card
+	        		System.out.println(receiveMessageOBJ.getUsernameOBJMessage() + " PLAYED: " + receiveMessageOBJ.getCardOBJMessage().getSpriteURL());
 	        	}
+	        	
 	        	
 	        	// Print hands
     			for( int j =0; j <clientInfoList.size(); j++ ){
@@ -191,11 +195,16 @@ public class Servers {
 	        		if(gameRunning == true){
 	        			serverLogtextArea.append("Game in process.\n");
 	        			if(donePass == 12){
-	        				serverLogtextArea.append("Done passing.\n");
-	        				for(int i=0; i <clientInfoList.size(); i++){
-		        				sendInstructions(clientInfoList.get(i), 1);
-		        			}	    
-	        				
+	        				if(roundNumber == 0){
+		        				serverLogtextArea.append("Done passing.\n");
+		        				for(int i=0; i <clientInfoList.size(); i++){
+			        				sendInstructions(clientInfoList.get(i), 1);
+			        			}
+		        				clientInformation temp = new clientInformation();
+		        				temp = firstCard();
+		        				System.out.println(" FIRST UP: " + temp.getUsernameCI());
+	        				}
+	        				roundNumber++;
 	        			}
 	        			    
 	        		}else if(gameRunning == false && playersReady == 4){
@@ -312,6 +321,27 @@ public class Servers {
 		passCardMessage.setCardOBJMessage(card);
 		outMessage = passCardMessage;
 		sendClientObject(client);
+	}
+	
+	public static clientInformation firstCard(){
+		String twoOfClubs = "C2";
+		clientInformation temp = new clientInformation();
+		for(int i = 0; i < clientInfoList.size(); i++){
+			for(int k = 0; k < clientInfoList.get(i).getHand().size(); k++){
+				if( twoOfClubs.equals(clientInfoList.get(i).getHand().get(k).getSuit() + clientInfoList.get(i).getHand().get(k).getRank())){
+					temp = clientInfoList.get(i);
+					break;
+				}
+			}
+		}
+		messageOBJ passCardMessage = new messageOBJ();
+		passCardMessage.setTypeOBJMessage("FC");
+		passCardMessage.setMessageOBJMessage("");
+		passCardMessage.setUsernameOBJMessage(temp.getUsernameCI());
+		outMessage = passCardMessage;
+		sendClientObject(temp);
+		
+		return temp;
 	}
 	
 	public static void shuffleDeck(){
