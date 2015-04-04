@@ -41,6 +41,7 @@ import java.awt.event.MouseEvent;
 
 public class Client {
 	private ArrayList<Card> hand = new ArrayList<Card>();
+	private ArrayList<Card> passedToMe = new ArrayList<Card>();
 	private ArrayList<Integer> passedCards = new ArrayList<Integer>();
 	InThread inThread = new InThread();
 	private static OutThread outThread;
@@ -316,8 +317,8 @@ public class Client {
 					System.out.println(hand.get(9).getSuit() + hand.get(9).getRank());
 					passCard(hand.get(9));
 					passedCards.add(9);
-					bhc8.setIcon(null);
-					bhc8.setVisible(false);
+					bhc9.setIcon(null);
+					bhc9.setVisible(false);
 					toPass--;
 				}
 			}
@@ -499,6 +500,13 @@ public class Client {
                 		lblIn.setVisible(true);
                 		instructionArea.setVisible(true);
                 	}else if(receiveMessage.getTypeOBJMessage().equals("PC")){
+                		passedToMe.add(receiveMessage.getCardOBJMessage());
+                		if(passedToMe.size() == 3){
+                			System.out.println("passed to me:");
+                			for(int i = 0; i < passedToMe.size(); i++){
+                    			System.out.println( passedToMe.get(i).getSuit() +  passedToMe.get(i).getRank());
+                    		}
+                		}
 //                		for (int i = 0; i < hand.size(); i++) {
 //							for(int k = 0; k <passedCards.size(); k++){
 //								if(passedCards.get(k) == i){

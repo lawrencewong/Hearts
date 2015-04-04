@@ -130,20 +130,23 @@ public class Servers {
 						}
 					}
 	        	}else if(receiveMessageOBJ.getTypeOBJMessage().equals("PC")){ // Passing a card
-//	        		for(int i = 0; i < clientInfoList.size(); i++){
-//						if(clientInfoList.get(i).getUsernameCI().equals(receiveMessageOBJ.getUsernameOBJMessage())){
-//							if(clientInfoList.get(i).getSeatingCI() == 1){
-//								clientInfoList.get(i).playCardCI(receiveMessageOBJ.getCardOBJMessage());
-//								passCard(clientInfoList.get(2), receiveMessageOBJ.getCardOBJMessage());
-//							}else if(clientInfoList.get(i).getSeatingCI() == 2){
-//								passCard(clientInfoList.get(3), receiveMessageOBJ.getCardOBJMessage());
-//							}else if(clientInfoList.get(i).getSeatingCI() == 3){
-//								passCard(clientInfoList.get(4), receiveMessageOBJ.getCardOBJMessage());
-//							}else if(clientInfoList.get(i).getSeatingCI() == 4){
-//								passCard(clientInfoList.get(1), receiveMessageOBJ.getCardOBJMessage());
-//							}
-//						}
-//					}
+	        		for(int i = 0; i < clientInfoList.size(); i++){
+						if(clientInfoList.get(i).getUsernameCI().equals(receiveMessageOBJ.getUsernameOBJMessage())){
+							if(clientInfoList.get(i).getSeatingCI() == 1){
+								serverLogtextArea.append(clientInfoList.get(i).getUsernameCI() + " passing " + receiveMessageOBJ.getCardOBJMessage().getSuit() +  receiveMessageOBJ.getCardOBJMessage().getRank() + " to " + clientInfoList.get(1).getUsernameCI());
+								passCard(clientInfoList.get(1), receiveMessageOBJ.getCardOBJMessage());
+							}else if(clientInfoList.get(i).getSeatingCI() == 2){
+								serverLogtextArea.append(clientInfoList.get(i).getUsernameCI() + " passing " + receiveMessageOBJ.getCardOBJMessage().getSuit() +  receiveMessageOBJ.getCardOBJMessage().getRank() + " to " + clientInfoList.get(2).getUsernameCI());
+								passCard(clientInfoList.get(2), receiveMessageOBJ.getCardOBJMessage());
+							}else if(clientInfoList.get(i).getSeatingCI() == 3){
+								serverLogtextArea.append(clientInfoList.get(i).getUsernameCI() + " passing " + receiveMessageOBJ.getCardOBJMessage().getSuit() +  receiveMessageOBJ.getCardOBJMessage().getRank() + " to " + clientInfoList.get(3).getUsernameCI());
+								passCard(clientInfoList.get(3), receiveMessageOBJ.getCardOBJMessage());
+							}else if(clientInfoList.get(i).getSeatingCI() == 4){
+								serverLogtextArea.append(clientInfoList.get(i).getUsernameCI() + " passing " + receiveMessageOBJ.getCardOBJMessage().getSuit() +  receiveMessageOBJ.getCardOBJMessage().getRank() + " to " + clientInfoList.get(0).getUsernameCI());
+								passCard(clientInfoList.get(0), receiveMessageOBJ.getCardOBJMessage());
+							}
+						}
+					}
 	        	}
 	        	
 	        	// Game start or continue
@@ -268,7 +271,7 @@ public class Servers {
 	
 	public static void passCard( clientInformation client, Card card){
 		serverLogtextArea.append("Passing "  + card.getSuit() + card.getRank() + " to " + client.getUsernameCI() + " SEAT: " + client.getSeatingCI() + "\n");
-		client.dealToHandCI(card);
+//		client.dealToHandCI(card);
 		messageOBJ passCardMessage = new messageOBJ();
 		passCardMessage.setTypeOBJMessage("PC");
 		passCardMessage.setMessageOBJMessage("");
