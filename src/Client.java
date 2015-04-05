@@ -52,6 +52,8 @@ public class Client {
 	JButton btnReady;
 	JLabel readylabel;
 	String twoOfClubs = "C2";
+	static Integer mySeat = 0;
+	Integer seated = 0;
 	static String clientName;
 	private static messageOBJ outMessage = null;
 	private JLabel lblRoomFullSorry;
@@ -1047,7 +1049,35 @@ public class Client {
                 		firstTurn = true;
                 		myTurn = true;
                 		System.out.println("MY TURN" + firstTurn + " " + myTurn);
+                	}else if(receiveMessage.getTypeOBJMessage().equals("SP")){
+                		if( mySeat == 0){
+                			mySeat = receiveMessage.getDataOBJMessage();
+                			bottomNameAndScore.setText(clientName);
+                		}
+                		if( seated == 1){
+                			leftNameAndScore.setText(receiveMessage.getMessageOBJMessage());
+                		}else if ( seated == 2){
+                			topNameAndScore.setText(receiveMessage.getMessageOBJMessage());
+                		}else if ( seated == 3){
+                			rightNameAndScore.setText(receiveMessage.getMessageOBJMessage());
+                		}
+                		seated++;
+                	}else if(receiveMessage.getTypeOBJMessage().equals("SC")){
+                		if( receiveMessage.getMessageOBJMessage().equals(leftNameAndScore.getText())){
+                			ImageIcon imageTopIcon = new ImageIcon(receiveMessage.getCardOBJMessage().getSpriteURL());
+                     		lc.setIcon(imageTopIcon);
+             		        leftCardPanel.add(lc, BorderLayout.CENTER );
+                		}else if ( receiveMessage.getMessageOBJMessage().equals(topNameAndScore.getText())){
+                			ImageIcon imageTopIcon = new ImageIcon(receiveMessage.getCardOBJMessage().getSpriteURL());
+                     		tc.setIcon(imageTopIcon);
+             		        topCardPanel.add(tc, BorderLayout.CENTER );
+                		}else if ( receiveMessage.getMessageOBJMessage().equals(rightNameAndScore.getText())){
+                			ImageIcon imageTopIcon = new ImageIcon(receiveMessage.getCardOBJMessage().getSpriteURL());
+                     		rc.setIcon(imageTopIcon);
+             		        rightCardPanel.add(rc, BorderLayout.CENTER );
+                		}
                 	}
+                	
                 } catch (ClassNotFoundException e){
                 	e.printStackTrace();
                 } catch (IOException e) {
@@ -1063,6 +1093,7 @@ public class Client {
 		passCardMessage.setMessageOBJMessage("");
 		passCardMessage.setUsernameOBJMessage(clientName);
 		passCardMessage.setCardOBJMessage(card);
+		passCardMessage.setDataOBJMessage(mySeat);
 		outMessage = passCardMessage;
 		outThread.run();
 	}

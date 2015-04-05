@@ -180,7 +180,7 @@ public class Servers {
 	        		serverLogtextArea.append(receiveMessageOBJ.getUsernameOBJMessage() + " PLAYED: " + receiveMessageOBJ.getCardOBJMessage().getSpriteURL());
 	        		for(int i= 0; i < clientInfoList.size(); i++){
 	        			if( clientInfoList.get(i).getUsernameCI() != receiveMessageOBJ.getUsernameOBJMessage()){
-	        				showCard(receiveMessageOBJ.getUsernameOBJMessage(), clientInfoList.get(i), receiveMessageOBJ.getCardOBJMessage());
+	        				showCard(receiveMessageOBJ, clientInfoList.get(i), receiveMessageOBJ.getCardOBJMessage());
 	        			}
 	        		}
 	        		cardLaid++;
@@ -203,17 +203,29 @@ public class Servers {
 	        		if(gameRunning == true){
 	        			serverLogtextArea.append("Game in process.\n");
 	        			if(donePass == 12){
-	        				serverLogtextArea.append("Round: " + roundNumber + " Cards Laid: " + cardLaid);
-	        				if(roundNumber == 0){
+	        				serverLogtextArea.append("Round: " + roundNumber + " Cards Laid: " + cardLaid + "\n");
+	        				if(roundNumber == 1){
 		        				serverLogtextArea.append("Done passing.\n");
 		        				for(int i=0; i <clientInfoList.size(); i++){
 			        				sendInstructions(clientInfoList.get(i), 1);
 			        			}
 		        				clientInformation temp = new clientInformation();
 		        				temp = firstCard();
-		        				serverLogtextArea.append(" FIRST UP: " + temp.getUsernameCI());
+		        				serverLogtextArea.append("FIRST UP: " + temp.getUsernameCI());
 	        				}
-	        				roundNumber++;
+	        				
+	        				// PLAY ROUND
+	        				
+	        				
+	        				
+	        				
+	        				
+	        				
+	        				
+	        				
+	        				if(cardLaid == 4){
+	        					roundNumber++;
+	        				}
 	        			}
 	        			    
 	        		}else if(gameRunning == false && playersReady == 4){
@@ -233,7 +245,6 @@ public class Servers {
 	        			for(int i=0; i <clientInfoList.size(); i++){
 	        				sendInstructions(clientInfoList.get(i), 0);
 	        			}	     
-	        			
 	        			sendSeating();
 	        		}
 	        	}
@@ -356,24 +367,120 @@ public class Servers {
 	}
 	
 	public static void sendSeating(){
-		clientInformation temp = new clientInformation();
+		serverLogtextArea.append("Sending seating plan.");
+		clientInformation seat1 = new clientInformation();
+		clientInformation seat2 = new clientInformation();
+		clientInformation seat3 = new clientInformation();
+		clientInformation seat4 = new clientInformation();
+		messageOBJ sendSeatingMessage = new messageOBJ();
+		sendSeatingMessage.setTypeOBJMessage("SP");
 		for(int i = 0; i < clientInfoList.size(); i++){
-			System.out.println("Seats: " + clientInfoList.get(i).getSeatingCI() );
-			for(int j = 0; j < clientInfoList.size(); j++){
-				if((clientInfoList.get(i).getSeatingCI() )%3 ==  clientInfoList.get(j).getSeatingCI()){
-					serverLogtextArea.append("To my left me: " + clientInfoList.get(j).getUsernameCI()+ "  at: " + clientInfoList.get(j).getSeatingCI() );
-				}
+			if(clientInfoList.get(i).getSeatingCI() == 1){
+				seat1 = clientInfoList.get(i);
+			}else if(clientInfoList.get(i).getSeatingCI() == 2){
+				seat2 = clientInfoList.get(i);
+			}else if(clientInfoList.get(i).getSeatingCI() == 3){
+				seat3 = clientInfoList.get(i);
+			}else if(clientInfoList.get(i).getSeatingCI() == 4){
+				seat4 = clientInfoList.get(i);
 			}
 		}
+		
+		for(int i = 0; i < clientInfoList.size(); i++){
+			if(clientInfoList.get(i).getSeatingCI() == 1){
+				sendSeatingMessage.setUsernameOBJMessage(clientInfoList.get(i).getUsernameCI());
+				sendSeatingMessage.setMessageOBJMessage(seat1.getUsernameCI());
+				sendSeatingMessage.setDataOBJMessage(seat1.getSeatingCI());
+				outMessage = sendSeatingMessage;
+				sendClientObject(clientInfoList.get(i));
+				sendSeatingMessage.setMessageOBJMessage(seat2.getUsernameCI());
+				sendSeatingMessage.setDataOBJMessage(seat2.getSeatingCI());
+				outMessage = sendSeatingMessage;
+				sendClientObject(clientInfoList.get(i));
+				sendSeatingMessage.setMessageOBJMessage(seat3.getUsernameCI());
+				sendSeatingMessage.setDataOBJMessage(seat3.getSeatingCI());
+				outMessage = sendSeatingMessage;
+				sendClientObject(clientInfoList.get(i));
+				sendSeatingMessage.setMessageOBJMessage(seat4.getUsernameCI());
+				sendSeatingMessage.setDataOBJMessage(seat4.getSeatingCI());
+				outMessage = sendSeatingMessage;
+				sendClientObject(clientInfoList.get(i));
+			}else if(clientInfoList.get(i).getSeatingCI() == 2){
+				sendSeatingMessage.setUsernameOBJMessage(clientInfoList.get(i).getUsernameCI());
+				sendSeatingMessage.setMessageOBJMessage(seat2.getUsernameCI());
+				sendSeatingMessage.setDataOBJMessage(seat2.getSeatingCI());
+				outMessage = sendSeatingMessage;
+				sendClientObject(clientInfoList.get(i));
+				sendSeatingMessage.setMessageOBJMessage(seat3.getUsernameCI());
+				sendSeatingMessage.setDataOBJMessage(seat3.getSeatingCI());
+				outMessage = sendSeatingMessage;
+				sendClientObject(clientInfoList.get(i));
+				sendSeatingMessage.setMessageOBJMessage(seat4.getUsernameCI());
+				sendSeatingMessage.setDataOBJMessage(seat4.getSeatingCI());
+				outMessage = sendSeatingMessage;
+				sendClientObject(clientInfoList.get(i));
+				sendSeatingMessage.setMessageOBJMessage(seat1.getUsernameCI());
+				sendSeatingMessage.setDataOBJMessage(seat1.getSeatingCI());
+				outMessage = sendSeatingMessage;
+				sendClientObject(clientInfoList.get(i));
+			}else if(clientInfoList.get(i).getSeatingCI() == 3){
+				sendSeatingMessage.setUsernameOBJMessage(clientInfoList.get(i).getUsernameCI());
+				sendSeatingMessage.setMessageOBJMessage(seat3.getUsernameCI());
+				sendSeatingMessage.setDataOBJMessage(seat3.getSeatingCI());
+				outMessage = sendSeatingMessage;
+				sendClientObject(clientInfoList.get(i));
+				sendSeatingMessage.setMessageOBJMessage(seat4.getUsernameCI());
+				sendSeatingMessage.setDataOBJMessage(seat4.getSeatingCI());
+				outMessage = sendSeatingMessage;
+				sendClientObject(clientInfoList.get(i));
+				sendSeatingMessage.setMessageOBJMessage(seat1.getUsernameCI());
+				sendSeatingMessage.setDataOBJMessage(seat1.getSeatingCI());
+				outMessage = sendSeatingMessage;
+				sendClientObject(clientInfoList.get(i));
+				sendSeatingMessage.setMessageOBJMessage(seat2.getUsernameCI());
+				sendSeatingMessage.setDataOBJMessage(seat2.getSeatingCI());
+				outMessage = sendSeatingMessage;
+				sendClientObject(clientInfoList.get(i));
+			}else if(clientInfoList.get(i).getSeatingCI() == 4){
+				sendSeatingMessage.setUsernameOBJMessage(clientInfoList.get(i).getUsernameCI());
+				sendSeatingMessage.setMessageOBJMessage(seat4.getUsernameCI());
+				sendSeatingMessage.setDataOBJMessage(seat4.getSeatingCI());
+				outMessage = sendSeatingMessage;
+				sendClientObject(clientInfoList.get(i));
+				sendSeatingMessage.setMessageOBJMessage(seat1.getUsernameCI());
+				sendSeatingMessage.setDataOBJMessage(seat1.getSeatingCI());
+				outMessage = sendSeatingMessage;
+				sendClientObject(clientInfoList.get(i));
+				sendSeatingMessage.setMessageOBJMessage(seat2.getUsernameCI());
+				sendSeatingMessage.setDataOBJMessage(seat2.getSeatingCI());
+				outMessage = sendSeatingMessage;
+				sendClientObject(clientInfoList.get(i));
+				sendSeatingMessage.setMessageOBJMessage(seat3.getUsernameCI());
+				sendSeatingMessage.setDataOBJMessage(seat3.getSeatingCI());
+				outMessage = sendSeatingMessage;
+				sendClientObject(clientInfoList.get(i));
+			}
+			outMessage = sendSeatingMessage;
+			sendClientObject(clientInfoList.get(i));
+		}
 	}
+	
 	
 	public static int upNext(Integer seat){
 		return seat;
 
 	}
 	
-	public static void showCard(String sender, clientInformation reciepent, Card card){
+	public static void showCard(messageOBJ activeUserInfo, clientInformation reciepent, Card card){
 		// Set who is sending it
+		messageOBJ passCardMessage = new messageOBJ();
+		passCardMessage.setTypeOBJMessage("SC");
+		passCardMessage.setMessageOBJMessage(activeUserInfo.getUsernameOBJMessage());
+		passCardMessage.setDataOBJMessage(activeUserInfo.getDataOBJMessage());
+		passCardMessage.setUsernameOBJMessage(reciepent.getUsernameCI());
+		passCardMessage.setCardOBJMessage(card);
+		outMessage = passCardMessage;
+		sendClientObject(reciepent);
 	}
 	
 	public static void shuffleDeck(){

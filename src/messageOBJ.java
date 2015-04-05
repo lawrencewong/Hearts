@@ -10,12 +10,14 @@ public class messageOBJ implements Serializable{
 	private String username;
 	private String typeOfMessage;
 	private Card card;
+	private Integer data;
 	
 	public messageOBJ(){
 		message = null;
 		username = null;
 		typeOfMessage = null;
 		card = null;
+		data = 0;
 	}
 	
 	public void setMessageOBJMessage(String clientMessage){
@@ -34,6 +36,10 @@ public class messageOBJ implements Serializable{
 		card = inCard;
 	}
 	
+	public void setDataOBJMessage(Integer input){
+		data = input;
+	}
+	
 	public String getMessageOBJMessage(){
 		return message;
 	}
@@ -48,5 +54,9 @@ public class messageOBJ implements Serializable{
 	
 	public Card getCardOBJMessage(){
 		return card;
+	}
+	
+	public Integer getDataOBJMessage(){
+		return data;
 	}
 }
