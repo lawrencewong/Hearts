@@ -53,6 +53,7 @@ public class Client {
 	JLabel readylabel;
 	String twoOfClubs = "C2";
 	static Integer mySeat = 0;
+	static Integer trickNumber = 0;
 	Integer seated = 0;
 	static String clientName;
 	private static messageOBJ outMessage = null;
@@ -1063,19 +1064,24 @@ public class Client {
                 		}
                 		seated++;
                 	}else if(receiveMessage.getTypeOBJMessage().equals("SC")){
+                		trickNumber++;
                 		if( receiveMessage.getMessageOBJMessage().equals(leftNameAndScore.getText())){
                 			ImageIcon imageTopIcon = new ImageIcon(receiveMessage.getCardOBJMessage().getSpriteURL());
                      		lc.setIcon(imageTopIcon);
+                     		cardLeftLabels.get(trickNumber.toString()).setIcon(null);
              		        leftCardPanel.add(lc, BorderLayout.CENTER );
                 		}else if ( receiveMessage.getMessageOBJMessage().equals(topNameAndScore.getText())){
                 			ImageIcon imageTopIcon = new ImageIcon(receiveMessage.getCardOBJMessage().getSpriteURL());
                      		tc.setIcon(imageTopIcon);
              		        topCardPanel.add(tc, BorderLayout.CENTER );
+             		        cardTopLabels.get(trickNumber.toString()).setIcon(null);
                 		}else if ( receiveMessage.getMessageOBJMessage().equals(rightNameAndScore.getText())){
                 			ImageIcon imageTopIcon = new ImageIcon(receiveMessage.getCardOBJMessage().getSpriteURL());
                      		rc.setIcon(imageTopIcon);
              		        rightCardPanel.add(rc, BorderLayout.CENTER );
+             		        cardRightLabels.get(trickNumber.toString()).setIcon(null);
                 		}
+                		
                 	}
                 	
                 } catch (ClassNotFoundException e){
