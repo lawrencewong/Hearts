@@ -5,11 +5,13 @@ public class Card implements Serializable{
 	private String suit;
 	private String rank;
 	private String sprite;
+	private Integer internalPower;
 	
 	public Card(){
 		suit = null;
 		rank = null;
 		sprite = null;
+		internalPower = 0;
 	}
 
 	public void setSuit(String inSuit) {
@@ -23,6 +25,10 @@ public class Card implements Serializable{
 	public void setSpriteURL(String inSprite) {
 		sprite = inSprite;
 	}
+	
+	public void setPower(Integer power) {
+		internalPower = power;
+	}
 
 	public String getSuit() {
 		return suit;
@@ -34,5 +40,9 @@ public class Card implements Serializable{
 	
 	public String getSpriteURL() {
 		return sprite;
+	}
+	
+	public Integer getPower() {
+		return internalPower;
 	}
 }

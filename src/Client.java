@@ -68,10 +68,10 @@ public class Client {
 	private JPanel bottomCardPanel;
 	private JPanel topCardPanel;
 	private JLabel lblIn;
-	private JLabel leftNameAndScore;
-	private JLabel topNameAndScore;
-	private JLabel rightNameAndScore;
-	private JLabel bottomNameAndScore;
+	private JLabel leftName;
+	private JLabel topName;
+	private JLabel rightName;
+	private JLabel bottomName;
 	private JLabel bhc0;
 	private JLabel bhc1;
 	private JLabel bhc2;
@@ -137,6 +137,10 @@ public class Client {
 	private static Boolean firstTurn = false;
 	
 	private int toPass = 3;
+	private JLabel bottomScore;
+	private JLabel leftScore;
+	private JLabel topScore;
+	private JLabel rightScore;
 
 
 
@@ -894,25 +898,25 @@ public class Client {
 		frame.getContentPane().add(lblIn);
 		lblIn.setVisible(false);
 		
-		leftNameAndScore = new JLabel("");
-		leftNameAndScore.setForeground(Color.WHITE);
-		leftNameAndScore.setBounds(116, 277, 178, 50);
-		frame.getContentPane().add(leftNameAndScore);
+		leftName = new JLabel("");
+		leftName.setForeground(Color.WHITE);
+		leftName.setBounds(117, 189, 178, 50);
+		frame.getContentPane().add(leftName);
 		
-		topNameAndScore = new JLabel("");
-		topNameAndScore.setForeground(Color.WHITE);
-		topNameAndScore.setBounds(431, 118, 200, 39);
-		frame.getContentPane().add(topNameAndScore);
+		topName = new JLabel("");
+		topName.setForeground(Color.WHITE);
+		topName.setBounds(336, 122, 200, 31);
+		frame.getContentPane().add(topName);
 		
-		rightNameAndScore = new JLabel("");
-		rightNameAndScore.setForeground(Color.WHITE);
-		rightNameAndScore.setBounds(826, 277, 178, 50);
-		frame.getContentPane().add(rightNameAndScore);
+		rightName = new JLabel("");
+		rightName.setForeground(Color.WHITE);
+		rightName.setBounds(822, 189, 178, 50);
+		frame.getContentPane().add(rightName);
 		
-		bottomNameAndScore = new JLabel("");
-		bottomNameAndScore.setForeground(Color.WHITE);
-		bottomNameAndScore.setBounds(431, 534, 200, 39);
-		frame.getContentPane().add(bottomNameAndScore);
+		bottomName = new JLabel("");
+		bottomName.setForeground(Color.WHITE);
+		bottomName.setBounds(501, 534, 200, 39);
+		frame.getContentPane().add(bottomName);
 		
 		instructionArea = new JTextArea();
 		instructionArea.setWrapStyleWord(true);
@@ -981,6 +985,26 @@ public class Client {
 		cardLeftLabels.put("11", lhc10);
 		cardLeftLabels.put("12", lhc11);
 		cardLeftLabels.put("13", lhc12);
+		
+		bottomScore = new JLabel("");
+		bottomScore.setForeground(Color.WHITE);
+		bottomScore.setBounds(726, 534, 200, 39);
+		frame.getContentPane().add(bottomScore);
+		
+		leftScore = new JLabel("");
+		leftScore.setForeground(Color.WHITE);
+		leftScore.setBounds(120, 246, 178, 50);
+		frame.getContentPane().add(leftScore);
+		
+		topScore = new JLabel("");
+		topScore.setForeground(Color.WHITE);
+		topScore.setBounds(571, 119, 200, 31);
+		frame.getContentPane().add(topScore);
+		
+		rightScore = new JLabel("");
+		rightScore.setForeground(Color.WHITE);
+		rightScore.setBounds(822, 264, 178, 50);
+		frame.getContentPane().add(rightScore);
 
 		
 	}
@@ -1054,31 +1078,31 @@ public class Client {
                 	}else if(receiveMessage.getTypeOBJMessage().equals("SP")){
                 		if( mySeat == 0){
                 			mySeat = receiveMessage.getDataOBJMessage();
-                			bottomNameAndScore.setText(clientName);
+                			bottomName.setText(clientName);
                 		}
                 		if( seated == 1){
-                			leftNameAndScore.setText(receiveMessage.getMessageOBJMessage());
+                			leftName.setText(receiveMessage.getMessageOBJMessage());
                 		}else if ( seated == 2){
-                			topNameAndScore.setText(receiveMessage.getMessageOBJMessage());
+                			topName.setText(receiveMessage.getMessageOBJMessage());
                 		}else if ( seated == 3){
-                			rightNameAndScore.setText(receiveMessage.getMessageOBJMessage());
+                			rightName.setText(receiveMessage.getMessageOBJMessage());
                 		}
                 		seated++;
                 	}else if(receiveMessage.getTypeOBJMessage().equals("SC")){
                 		trickNumber = receiveMessage.getTrickOBJMessage();
                 		Integer labelToEdit = trickNumber;
                 		System.out.println("LABEL: " + labelToEdit);
-                		if( receiveMessage.getMessageOBJMessage().equals(leftNameAndScore.getText())){
+                		if( receiveMessage.getMessageOBJMessage().equals(leftName.getText())){
                 			ImageIcon imageTopIcon = new ImageIcon(receiveMessage.getCardOBJMessage().getSpriteURL());
                      		lc.setIcon(imageTopIcon);
                      		cardLeftLabels.get(labelToEdit.toString()).setIcon(null);
              		        leftCardPanel.add(lc, BorderLayout.CENTER );
-                		}else if ( receiveMessage.getMessageOBJMessage().equals(topNameAndScore.getText())){
+                		}else if ( receiveMessage.getMessageOBJMessage().equals(topName.getText())){
                 			ImageIcon imageTopIcon = new ImageIcon(receiveMessage.getCardOBJMessage().getSpriteURL());
                      		tc.setIcon(imageTopIcon);
              		        topCardPanel.add(tc, BorderLayout.CENTER );
              		        cardTopLabels.get(labelToEdit.toString()).setIcon(null);
-                		}else if ( receiveMessage.getMessageOBJMessage().equals(rightNameAndScore.getText())){
+                		}else if ( receiveMessage.getMessageOBJMessage().equals(rightName.getText())){
                 			ImageIcon imageTopIcon = new ImageIcon(receiveMessage.getCardOBJMessage().getSpriteURL());
                      		rc.setIcon(imageTopIcon);
              		        rightCardPanel.add(rc, BorderLayout.CENTER );
@@ -1089,6 +1113,19 @@ public class Client {
                 		firstTurn = false;
                 		myTurn = true;
                 		System.out.println(" ACTUAL MY TURN" + firstTurn + " " + myTurn);
+                	}else if(receiveMessage.getTypeOBJMessage().equals("US")){
+                		System.out.println("SEFA");
+//                		trickNumber = receiveMessage.getTrickOBJMessage();
+                		
+//                		if(receiveMessage.getUsernameOBJMessage().equals(bottomName.getText())){
+//                			bottomScore.setText(receiveMessage.getClientOBJMessage().getCurrentPointsCI() + "(" + receiveMessage.getClientOBJMessage().getGamePointsCI() +  ")");
+//                		}else if(receiveMessage.getUsernameOBJMessage().equals(topName.getText())){
+//                			topScore.setText(receiveMessage.getClientOBJMessage().getCurrentPointsCI() + "(" + receiveMessage.getClientOBJMessage().getGamePointsCI() +  ")");
+//                		}else if(receiveMessage.getUsernameOBJMessage().equals(leftName.getText())){
+//                			leftScore.setText(receiveMessage.getClientOBJMessage().getCurrentPointsCI() + "(" + receiveMessage.getClientOBJMessage().getGamePointsCI() +  ")");
+//                		}else if(receiveMessage.getUsernameOBJMessage().equals(rightName.getText())){
+//                			rightScore.setText(receiveMessage.getClientOBJMessage().getCurrentPointsCI() + "(" + receiveMessage.getClientOBJMessage().getGamePointsCI() +  ")");
+//                		}
                 	}
                 	
                 } catch (ClassNotFoundException e){

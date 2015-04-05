@@ -2,7 +2,10 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 
 
-public class clientInformation {
+import java.io.Serializable;
+
+
+public class clientInformation implements Serializable{
 	private String username;
 	private InetAddress ipAddress;
 	private int port;
@@ -11,6 +14,7 @@ public class clientInformation {
 	private ArrayList<Card> hand = new ArrayList<Card>();
 	private int currentPoints;
 	private int gamePoints;
+	private Card activeCard;
 	
 	public clientInformation(){
 		username = null;
@@ -94,6 +98,14 @@ public class clientInformation {
 	
 	public int getGamePointsCI(){
 		return gamePoints;
+	}
+	
+	public void setActiveCard(Card active){
+		activeCard = active;
+	}
+	
+	public Card getActiveCard(){
+		return activeCard;
 	}
 
 }

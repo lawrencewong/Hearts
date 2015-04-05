@@ -40,9 +40,12 @@ public class Servers {
 	private static messageOBJ outMessage = null;
 	static Integer donePass = 0;
 	static Integer roundNumber = 1;
+	static Integer trick = 1;
 	static Integer cardLaid = 0;
 	static Integer nextTurn = 0;
-	
+	static Integer leader = 0;
+	static Integer trickPoints = 0;
+	static Boolean brokenHeart = false;
 	// Cards
 	static Card[] deck = new Card[52];
 	static String[] suit = {"S", "H", "C", "D"};
@@ -64,6 +67,7 @@ public class Servers {
         	deck[i] = new Card();
         	deck[i].setSuit(suit[i/13]);
         	deck[i].setRank(rank[i%13]);
+        	deck[i].setPower(i%13);
         	deck[i].setSpriteURL("sprites\\" + deck[i].getSuit() + deck[i].getRank() + ".png");
         }
         
@@ -182,13 +186,14 @@ public class Servers {
 	        		Integer index = 0;
 	        		serverLogtextArea.append(receiveMessageOBJ.getUsernameOBJMessage() + " PLAYED: " + receiveMessageOBJ.getCardOBJMessage().getSpriteURL());
 	        		for(int i= 0; i < clientInfoList.size(); i++){
-	        			if( clientInfoList.get(i).getUsernameCI() == receiveMessageOBJ.getUsernameOBJMessage()){
+	        			if( clientInfoList.get(i).getUsernameCI().equals(receiveMessageOBJ.getUsernameOBJMessage())){
 	        				index = i;
 	        			}
 	        		}
+	        		clientInfoList.get(index).setActiveCard(receiveMessageOBJ.getCardOBJMessage());
 	        		for(int i= 0; i < clientInfoList.get(index).getHand().size(); i++){
 	        			if(  clientInfoList.get(index).getHand().get(i).getSpriteURL().equals(receiveMessageOBJ.getCardOBJMessage().getSpriteURL())){
-	        				 clientInfoList.get(index).getHand().remove(index);
+	        				 clientInfoList.get(index).getHand().remove(i);
 	        			}
 	        		}
 	        		for(int i= 0; i < clientInfoList.size(); i++){
@@ -217,7 +222,7 @@ public class Servers {
 	        			serverLogtextArea.append("Game in process.\n");
 	        			if(donePass == 12){
 	        				serverLogtextArea.append("Round: " + roundNumber + " Cards Laid: " + cardLaid + "\n");
-	        				if(roundNumber == 1){
+	        				if(trick == 1){
 	        					if(cardLaid == 0){
 	        						serverLogtextArea.append("Done passing.\n");
 			        				for(int i=0; i <clientInfoList.size(); i++){
@@ -232,9 +237,6 @@ public class Servers {
 			        					nextTurn = 4;
 			        				}
 	        					}
-	        					
-		        				
-		   
 	        				}
 	        				if(cardLaid != 0){
 	        					serverLogtextArea.append("NOW ACTIVE : " + nextTurn  + "\n");
@@ -248,11 +250,71 @@ public class Servers {
 		        				serverLogtextArea.append("NEXT: " + nextTurn + "\n");
 	        				}
 	        				
+	        				
+	        				
 
 	        				// PLAY ROUND
 	        				
 	        				if(cardLaid == 4){
-	        					roundNumber++;
+	        					System.out.println("CS: " +  clientInfoList.size());
+	        					Card bestCard = new Card();
+	        					bestCard = clientInfoList.get(leader).getActiveCard();
+	        					
+	        					// CHECK WHO WON THE TRICK
+	        					for (int i = 0; i < clientInfoList.size(); i++) {
+	        						serverLogtextArea.append("Player: " + clientInfoList.get(i).getUsernameCI() + " played: " + clientInfoList.get(i).getActiveCard().getSpriteURL() + " \n");
+	        						// Check for the same suit
+	        						if(bestCard.getSuit().equals(clientInfoList.get(i).getActiveCard().getSuit())){
+	        							System.out.println("POER OFF " + bestCard.getPower() + "  " +  clientInfoList.get(i).getActiveCard().getPower());
+	        							if(bestCard.getPower() > clientInfoList.get(i).getActiveCard().getPower()){
+	        								System.out.println(bestCard.getSpriteURL() + " beat out " +  clientInfoList.get(i).getActiveCard().getSpriteURL());
+	        							}else if(bestCard.getPower() < clientInfoList.get(i).getActiveCard().getPower()){
+	        								System.out.println(clientInfoList.get(i).getActiveCard().getSpriteURL() + " beat out " +  bestCard.getSpriteURL());
+	        								bestCard = clientInfoList.get(i).getActiveCard();
+	        								leader = i;					
+	        							}
+	        						}else{
+	        							System.out.println(bestCard.getSpriteURL() + " beat out " +  clientInfoList.get(i).getActiveCard().getSpriteURL());
+	        						}
+	        						
+	        						// Add hearts or QS
+	        						if(clientInfoList.get(i).getActiveCard().getSuit().equals("H")){
+	        							trickPoints++;
+	        							brokenHeart = true;
+	        						}else if(clientInfoList.get(i).getActiveCard().getSuit().equals("S") && clientInfoList.get(i).getActiveCard().getRank().equals("Q")){
+	        							trickPoints = trickPoints + 13;
+	        						}
+								}
+	        					
+	        					// Detemrine who is next because of win
+	        					nextTurn = clientInfoList.get(leader).getSeatingCI();
+	        					
+	        					// Assign points
+	        					clientInfoList.get(leader).setCurrentPointsCI(trickPoints);
+	        					trickPoints = 0;
+	        					
+	        					for (int i = 0; i < clientInfoList.size(); i++) {
+	        						System.out.println(clientInfoList.get(i).getUsernameCI() + " GOT THIS MANY POINTS: " + clientInfoList.get(i).getCurrentPointsCI());
+	        						updateScores(clientInfoList.get(i));
+	        					}
+	        					
+	        					
+	        					
+	        					
+	        					
+	        					
+	        					
+	        					
+	        					
+	        					
+	        					
+	        					if(trick == 13){
+	        						// Calculate round results
+	        						trick = 0;
+	        					}else{
+	        						trick++;
+	        					}
+	        					
 	        				}
 	        			}
 	        			    
@@ -286,6 +348,7 @@ public class Servers {
 		}
 	}
 
+	
 	public Servers() throws IOException {
 		initialize();
 	}
@@ -380,6 +443,7 @@ public class Servers {
 			for(int k = 0; k < clientInfoList.get(i).getHand().size(); k++){
 				if( twoOfClubs.equals(clientInfoList.get(i).getHand().get(k).getSuit() + clientInfoList.get(i).getHand().get(k).getRank())){
 					temp = clientInfoList.get(i);
+					leader = i;
 					break;
 				}
 			}
@@ -507,11 +571,18 @@ public class Servers {
 		}
 	}
 	
-	
-	public static int upNext(Integer seat){
-		return seat;
-
+	private static void updateScores(clientInformation clientInformation) {
+		messageOBJ passCardMessage = new messageOBJ();
+		passCardMessage.setTypeOBJMessage("US");
+		for(int i = 0; i < clientInfoList.size(); i++){
+			passCardMessage.setClientOBJMessage(clientInfoList.get(i));
+			passCardMessage.setUsernameOBJMessage(clientInfoList.get(i).getUsernameCI());
+			passCardMessage.setTrickOBJMessage(trick);
+			outMessage = passCardMessage;
+			sendClientObject(clientInformation);
+		}
 	}
+
 	
 	public static void showCard(messageOBJ activeUserInfo, clientInformation reciepent, Card card){
 		// Set who is sending it
@@ -532,14 +603,17 @@ public class Servers {
 			String tempSuit = deck[i].getSuit();
 			String tempRank = deck[i].getRank();
 			String tempSpriteURL = deck[i].getSpriteURL();
+			Integer tempPower= deck[i].getPower();
 			
 			deck[i].setSuit(deck[index].getSuit());
 			deck[i].setRank(deck[index].getRank());
 			deck[i].setSpriteURL(deck[index].getSpriteURL());
+			deck[i].setPower(deck[index].getPower());
 			
 			deck[index].setSuit(tempSuit);
 			deck[index].setRank(tempRank);
 			deck[index].setSpriteURL(tempSpriteURL);
+			deck[index].setPower(tempPower);
 		}
 	}
 	
