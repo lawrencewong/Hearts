@@ -22,6 +22,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.sql.ClientInfoStatus;
 import java.util.ArrayList;
 
 import javax.swing.JScrollPane;
@@ -40,6 +41,7 @@ public class Servers {
 	static Integer donePass = 0;
 	static Integer roundNumber = 1;
 	static Integer cardLaid = 0;
+	static Integer nextTurn = 0;
 	
 	// Cards
 	static Card[] deck = new Card[52];
@@ -177,7 +179,18 @@ public class Servers {
 						}
 					}
 	        	}else if(receiveMessageOBJ.getTypeOBJMessage().equals("LC")){ // Passing a card
+	        		Integer index = 0;
 	        		serverLogtextArea.append(receiveMessageOBJ.getUsernameOBJMessage() + " PLAYED: " + receiveMessageOBJ.getCardOBJMessage().getSpriteURL());
+	        		for(int i= 0; i < clientInfoList.size(); i++){
+	        			if( clientInfoList.get(i).getUsernameCI() == receiveMessageOBJ.getUsernameOBJMessage()){
+	        				index = i;
+	        			}
+	        		}
+	        		for(int i= 0; i < clientInfoList.get(index).getHand().size(); i++){
+	        			if(  clientInfoList.get(index).getHand().get(i).getSpriteURL().equals(receiveMessageOBJ.getCardOBJMessage().getSpriteURL())){
+	        				 clientInfoList.get(index).getHand().remove(index);
+	        			}
+	        		}
 	        		for(int i= 0; i < clientInfoList.size(); i++){
 	        			if( clientInfoList.get(i).getUsernameCI() != receiveMessageOBJ.getUsernameOBJMessage()){
 	        				showCard(receiveMessageOBJ, clientInfoList.get(i), receiveMessageOBJ.getCardOBJMessage());
@@ -205,23 +218,38 @@ public class Servers {
 	        			if(donePass == 12){
 	        				serverLogtextArea.append("Round: " + roundNumber + " Cards Laid: " + cardLaid + "\n");
 	        				if(roundNumber == 1){
-		        				serverLogtextArea.append("Done passing.\n");
-		        				for(int i=0; i <clientInfoList.size(); i++){
-			        				sendInstructions(clientInfoList.get(i), 1);
-			        			}
-		        				clientInformation temp = new clientInformation();
-		        				temp = firstCard();
-		        				serverLogtextArea.append("FIRST UP: " + temp.getUsernameCI());
+	        					if(cardLaid == 0){
+	        						serverLogtextArea.append("Done passing.\n");
+			        				for(int i=0; i <clientInfoList.size(); i++){
+				        				sendInstructions(clientInfoList.get(i), 1);
+				        			}
+			        				clientInformation temp = new clientInformation();
+			        				temp = firstCard();
+			        				nextTurn = temp.getSeatingCI();
+			        				nextTurn = nextTurn + 1;
+			        				nextTurn = nextTurn%4;
+			        				if(nextTurn == 0){
+			        					nextTurn = 4;
+			        				}
+	        					}
+	        					
+		        				
+		   
+	        				}
+	        				if(cardLaid != 0){
+	        					serverLogtextArea.append("NOW ACTIVE : " + nextTurn  + "\n");
+		        				// Play 
+		        				activeCard(nextTurn);
+		        				nextTurn = nextTurn + 1;
+		        				nextTurn = nextTurn%4;
+		        				if(nextTurn == 0){
+		        					nextTurn = 4;
+		        				}
+		        				serverLogtextArea.append("NEXT: " + nextTurn + "\n");
 	        				}
 	        				
+
 	        				// PLAY ROUND
-	        				
-	        				
-	        				
-	        				
-	        				
-	        				
-	        				
 	        				
 	        				if(cardLaid == 4){
 	        					roundNumber++;
@@ -362,8 +390,22 @@ public class Servers {
 		passCardMessage.setUsernameOBJMessage(temp.getUsernameCI());
 		outMessage = passCardMessage;
 		sendClientObject(temp);
-		
 		return temp;
+	}
+	
+	public static void activeCard(Integer nextUp){
+		clientInformation temp = new clientInformation();
+		for(int i = 0; i < clientInfoList.size(); i++){
+			if(clientInfoList.get(i).getSeatingCI() == nextUp){
+				temp = clientInfoList.get(i);
+			}
+		}
+		messageOBJ passCardMessage = new messageOBJ();
+		passCardMessage.setTypeOBJMessage("AC");
+		passCardMessage.setMessageOBJMessage("");
+		passCardMessage.setUsernameOBJMessage(temp.getUsernameCI());
+		outMessage = passCardMessage;
+		sendClientObject(temp);
 	}
 	
 	public static void sendSeating(){
@@ -479,6 +521,7 @@ public class Servers {
 		passCardMessage.setDataOBJMessage(activeUserInfo.getDataOBJMessage());
 		passCardMessage.setUsernameOBJMessage(reciepent.getUsernameCI());
 		passCardMessage.setCardOBJMessage(card);
+		passCardMessage.setTrickOBJMessage(roundNumber);
 		outMessage = passCardMessage;
 		sendClientObject(reciepent);
 	}

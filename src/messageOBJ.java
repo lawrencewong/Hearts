@@ -11,6 +11,7 @@ public class messageOBJ implements Serializable{
 	private String typeOfMessage;
 	private Card card;
 	private Integer data;
+	private Integer trick;
 	
 	public messageOBJ(){
 		message = null;
@@ -18,6 +19,7 @@ public class messageOBJ implements Serializable{
 		typeOfMessage = null;
 		card = null;
 		data = 0;
+		trick = 0;
 	}
 	
 	public void setMessageOBJMessage(String clientMessage){
@@ -58,5 +60,13 @@ public class messageOBJ implements Serializable{
 	
 	public Integer getDataOBJMessage(){
 		return data;
+	}
+	
+	public void setTrickOBJMessage(Integer trickNumber){
+		trick = trickNumber;
+	}
+	
+	public Integer getTrickOBJMessage(){
+		return trick;
 	}
 }

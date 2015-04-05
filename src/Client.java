@@ -1050,6 +1050,7 @@ public class Client {
                 		firstTurn = true;
                 		myTurn = true;
                 		System.out.println("MY TURN" + firstTurn + " " + myTurn);
+                		trickNumber = 1;
                 	}else if(receiveMessage.getTypeOBJMessage().equals("SP")){
                 		if( mySeat == 0){
                 			mySeat = receiveMessage.getDataOBJMessage();
@@ -1064,24 +1065,30 @@ public class Client {
                 		}
                 		seated++;
                 	}else if(receiveMessage.getTypeOBJMessage().equals("SC")){
-                		trickNumber++;
+                		trickNumber = receiveMessage.getTrickOBJMessage();
+                		Integer labelToEdit = trickNumber;
+                		System.out.println("LABEL: " + labelToEdit);
                 		if( receiveMessage.getMessageOBJMessage().equals(leftNameAndScore.getText())){
                 			ImageIcon imageTopIcon = new ImageIcon(receiveMessage.getCardOBJMessage().getSpriteURL());
                      		lc.setIcon(imageTopIcon);
-                     		cardLeftLabels.get(trickNumber.toString()).setIcon(null);
+                     		cardLeftLabels.get(labelToEdit.toString()).setIcon(null);
              		        leftCardPanel.add(lc, BorderLayout.CENTER );
                 		}else if ( receiveMessage.getMessageOBJMessage().equals(topNameAndScore.getText())){
                 			ImageIcon imageTopIcon = new ImageIcon(receiveMessage.getCardOBJMessage().getSpriteURL());
                      		tc.setIcon(imageTopIcon);
              		        topCardPanel.add(tc, BorderLayout.CENTER );
-             		        cardTopLabels.get(trickNumber.toString()).setIcon(null);
+             		        cardTopLabels.get(labelToEdit.toString()).setIcon(null);
                 		}else if ( receiveMessage.getMessageOBJMessage().equals(rightNameAndScore.getText())){
                 			ImageIcon imageTopIcon = new ImageIcon(receiveMessage.getCardOBJMessage().getSpriteURL());
                      		rc.setIcon(imageTopIcon);
              		        rightCardPanel.add(rc, BorderLayout.CENTER );
-             		        cardRightLabels.get(trickNumber.toString()).setIcon(null);
+             		        cardRightLabels.get(labelToEdit.toString()).setIcon(null);
                 		}
                 		
+                	}else if(receiveMessage.getTypeOBJMessage().equals("AC")){
+                		firstTurn = false;
+                		myTurn = true;
+                		System.out.println(" ACTUAL MY TURN" + firstTurn + " " + myTurn);
                 	}
                 	
                 } catch (ClassNotFoundException e){
@@ -1100,6 +1107,8 @@ public class Client {
 		passCardMessage.setUsernameOBJMessage(clientName);
 		passCardMessage.setCardOBJMessage(card);
 		passCardMessage.setDataOBJMessage(mySeat);
+		myTurn = false;
+		firstTurn = false;
 		outMessage = passCardMessage;
 		outThread.run();
 	}
