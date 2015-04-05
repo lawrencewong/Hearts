@@ -38,7 +38,8 @@ public class Servers {
 	static Integer playersReady = 0;
 	private static messageOBJ outMessage = null;
 	static Integer donePass = 0;
-	static Integer roundNumber = 0;
+	static Integer roundNumber = 1;
+	static Integer cardLaid = 0;
 	
 	// Cards
 	static Card[] deck = new Card[52];
@@ -176,7 +177,14 @@ public class Servers {
 						}
 					}
 	        	}else if(receiveMessageOBJ.getTypeOBJMessage().equals("LC")){ // Passing a card
-	        		System.out.println(receiveMessageOBJ.getUsernameOBJMessage() + " PLAYED: " + receiveMessageOBJ.getCardOBJMessage().getSpriteURL());
+	        		serverLogtextArea.append(receiveMessageOBJ.getUsernameOBJMessage() + " PLAYED: " + receiveMessageOBJ.getCardOBJMessage().getSpriteURL());
+	        		for(int i= 0; i < clientInfoList.size(); i++){
+	        			if( clientInfoList.get(i).getUsernameCI() != receiveMessageOBJ.getUsernameOBJMessage()){
+	        				showCard(receiveMessageOBJ.getUsernameOBJMessage(), clientInfoList.get(i), receiveMessageOBJ.getCardOBJMessage());
+	        			}
+	        		}
+	        		cardLaid++;
+	        		// Next person
 	        	}
 	        	
 	        	
@@ -195,6 +203,7 @@ public class Servers {
 	        		if(gameRunning == true){
 	        			serverLogtextArea.append("Game in process.\n");
 	        			if(donePass == 12){
+	        				serverLogtextArea.append("Round: " + roundNumber + " Cards Laid: " + cardLaid);
 	        				if(roundNumber == 0){
 		        				serverLogtextArea.append("Done passing.\n");
 		        				for(int i=0; i <clientInfoList.size(); i++){
@@ -202,7 +211,7 @@ public class Servers {
 			        			}
 		        				clientInformation temp = new clientInformation();
 		        				temp = firstCard();
-		        				System.out.println(" FIRST UP: " + temp.getUsernameCI());
+		        				serverLogtextArea.append(" FIRST UP: " + temp.getUsernameCI());
 	        				}
 	        				roundNumber++;
 	        			}
@@ -223,7 +232,9 @@ public class Servers {
 	        			// First instruction
 	        			for(int i=0; i <clientInfoList.size(); i++){
 	        				sendInstructions(clientInfoList.get(i), 0);
-	        			}	        		
+	        			}	     
+	        			
+	        			sendSeating();
 	        		}
 	        	}
 	        	
@@ -342,6 +353,27 @@ public class Servers {
 		sendClientObject(temp);
 		
 		return temp;
+	}
+	
+	public static void sendSeating(){
+		clientInformation temp = new clientInformation();
+		for(int i = 0; i < clientInfoList.size(); i++){
+			System.out.println("Seats: " + clientInfoList.get(i).getSeatingCI() );
+			for(int j = 0; j < clientInfoList.size(); j++){
+				if((clientInfoList.get(i).getSeatingCI() )%3 ==  clientInfoList.get(j).getSeatingCI()){
+					serverLogtextArea.append("To my left me: " + clientInfoList.get(j).getUsernameCI()+ "  at: " + clientInfoList.get(j).getSeatingCI() );
+				}
+			}
+		}
+	}
+	
+	public static int upNext(Integer seat){
+		return seat;
+
+	}
+	
+	public static void showCard(String sender, clientInformation reciepent, Card card){
+		// Set who is sending it
 	}
 	
 	public static void shuffleDeck(){

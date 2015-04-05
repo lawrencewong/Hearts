@@ -221,6 +221,7 @@ public class Client {
 		bhc0.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
+				System.out.println("CLICKED 0: " + hand.get(0).getSpriteURL() + " TP: " + toPass + " myTurn " + myTurn + " first turn " + firstTurn );
 				if(toPass > 0){
 					bhc0.setIcon(null);
 					bhc0.setVisible(false);
@@ -257,6 +258,7 @@ public class Client {
 		bhc1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				System.out.println("CLICKED 1: " + hand.get(1).getSpriteURL() + " TP: " + toPass + " myTurn " + myTurn + " first turn " + firstTurn );
 				if(toPass > 0){
 					bhc1.setIcon(null);
 					bhc1.setVisible(false);
@@ -293,6 +295,7 @@ public class Client {
 		bhc2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				System.out.println("CLICKED 2: " + hand.get(2).getSpriteURL() + " TP: " + toPass + " myTurn " + myTurn + " first turn " + firstTurn );
 				if(toPass > 0){
 					bhc2.setIcon(null);
 					bhc2.setVisible(false);
@@ -330,6 +333,7 @@ public class Client {
 		bhc3.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				System.out.println("CLICKED 3: " + hand.get(3).getSpriteURL() + " TP: " + toPass + " myTurn " + myTurn + " first turn " + firstTurn );
 				if(toPass > 0){
 					bhc3.setIcon(null);
 					bhc3.setVisible(false);
@@ -367,6 +371,7 @@ public class Client {
 		bhc4.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				System.out.println("CLICKED 4: " + hand.get(4).getSpriteURL() + " TP: " + toPass + " myTurn " + myTurn + " first turn " + firstTurn );
 				if(toPass > 0){
 					bhc4.setIcon(null);
 					bhc4.setVisible(false);
@@ -404,6 +409,7 @@ public class Client {
 		bhc5.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				System.out.println("CLICKED 5: " + hand.get(5).getSpriteURL() + " TP: " + toPass + " myTurn " + myTurn + " first turn " + firstTurn );
 				if(toPass > 0){
 					bhc5.setIcon(null);
 					bhc5.setVisible(false);
@@ -441,6 +447,7 @@ public class Client {
 		bhc6.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				System.out.println("CLICKED 6: " + hand.get(6).getSpriteURL() + " TP: " + toPass + " myTurn " + myTurn + " first turn " + firstTurn );
 				if(toPass > 0){
 					bhc6.setIcon(null);
 					bhc6.setVisible(false);
@@ -478,6 +485,7 @@ public class Client {
 		bhc7.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				System.out.println("CLICKED 7: " + hand.get(7).getSpriteURL() + " TP: " + toPass + " myTurn " + myTurn + " first turn " + firstTurn );
 				if(toPass > 0){
 					bhc7.setIcon(null);
 					bhc7.setVisible(false);
@@ -515,6 +523,7 @@ public class Client {
 		bhc8.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				System.out.println("CLICKED 8: " + hand.get(8).getSpriteURL() + " TP: " + toPass + " myTurn " + myTurn + " first turn " + firstTurn );
 				if(toPass > 0){
 					bhc8.setIcon(null);
 					bhc8.setVisible(false);
@@ -552,6 +561,7 @@ public class Client {
 		bhc9.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				System.out.println("CLICKED 9: " + hand.get(9).getSpriteURL() + " TP: " + toPass + " myTurn " + myTurn + " first turn " + firstTurn );
 				if(toPass > 0){
 					bhc9.setIcon(null);
 					bhc9.setVisible(false);
@@ -589,6 +599,7 @@ public class Client {
 		bhc10.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				System.out.println("CLICKED 10: " + hand.get(10).getSpriteURL() + " TP: " + toPass + " myTurn " + myTurn + " first turn " + firstTurn );
 				if(toPass > 0){
 					bhc10.setIcon(null);
 					bhc10.setVisible(false);
@@ -626,6 +637,7 @@ public class Client {
 		bhc11.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				System.out.println("CLICKED 11: " + hand.get(11).getSpriteURL() + " TP: " + toPass + " myTurn " + myTurn + " first turn " + firstTurn );
 				if(toPass > 0){
 					bhc11.setIcon(null);
 					bhc11.setVisible(false);
@@ -663,6 +675,7 @@ public class Client {
 		bhc12.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				System.out.println("CLICKED 12: " + hand.get(12).getSpriteURL() + " TP: " + toPass + " myTurn " + myTurn + " first turn " + firstTurn );
 				if(toPass > 0){
 					bhc12.setIcon(null);
 					bhc12.setVisible(false);
@@ -1030,8 +1043,10 @@ public class Client {
                 		passedToMe.add(receiveMessage.getCardOBJMessage());
                 		checkUpdate();
                 	}else if(receiveMessage.getTypeOBJMessage().equals("FC")){
+                		
                 		firstTurn = true;
                 		myTurn = true;
+                		System.out.println("MY TURN" + firstTurn + " " + myTurn);
                 	}
                 } catch (ClassNotFoundException e){
                 	e.printStackTrace();
@@ -1063,22 +1078,17 @@ public class Client {
 	}
 	public static void checkUpdate(){
 		if(passedToMe.size() == 3 && passedCards.size() == 3){
-			for( int i = 0; i < hand.size(); i++){
-				for( int k = 0; k < passedCards.size(); k++){
-					if(passedCards.get(k) == i){
-						hand.get(passedCards.get(k)).setRank(passedToMe.get(k).getRank());
-						hand.get(passedCards.get(k)).setSuit(passedToMe.get(k).getSuit());
-						hand.get(passedCards.get(k)).setRank(passedToMe.get(k).getSpriteURL());
-						ImageIcon imageIcon = new ImageIcon(passedToMe.get(k).getSpriteURL());
-                		cardLabels.get(Integer.toString(passedCards.get(k)+1)).setIcon(imageIcon);
-        		        bottomHandpanel.add( cardLabels.get(Integer.toString(passedCards.get(k)+1)), BorderLayout.CENTER );
-        		        cardLabels.get(Integer.toString(passedCards.get(k)+1)).setVisible(true);
-        		        passedToMe.remove(k);
-        		        passedCards.remove(k);
-						break;
-					}
-				}
+			for( int k = 0; k < passedCards.size(); k++){
+				hand.get(passedCards.get(k)).setRank(passedToMe.get(k).getRank());
+				hand.get(passedCards.get(k)).setSuit(passedToMe.get(k).getSuit());
+				hand.get(passedCards.get(k)).setSpriteURL(passedToMe.get(k).getSpriteURL());
+				ImageIcon imageIcon = new ImageIcon(passedToMe.get(k).getSpriteURL());
+        		cardLabels.get(Integer.toString(passedCards.get(k)+1)).setIcon(imageIcon);
+		        bottomHandpanel.add( cardLabels.get(Integer.toString(passedCards.get(k)+1)), BorderLayout.CENTER );
+		        cardLabels.get(Integer.toString(passedCards.get(k)+1)).setVisible(true);
 			}
+			passedToMe.clear();
+			passedCards.clear();
 		}
 	}
 	
