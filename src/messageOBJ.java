@@ -12,7 +12,8 @@ public class messageOBJ implements Serializable{
 	private Card card;
 	private Integer data;
 	private Integer trick;
-	private clientInformation client;
+	private Integer currentPoints;
+	private Integer gamePoints;
 	
 	public messageOBJ(){
 		message = null;
@@ -20,7 +21,8 @@ public class messageOBJ implements Serializable{
 		typeOfMessage = null;
 		card = null;
 		data = 0;
-		client = null;
+		currentPoints = 0;
+		gamePoints = 0;
 		trick = 0;
 	}
 	
@@ -42,6 +44,14 @@ public class messageOBJ implements Serializable{
 	
 	public void setDataOBJMessage(Integer input){
 		data = input;
+	}
+	
+	public void setCurrentPointsOBJMessage(Integer input){
+		currentPoints = input;
+	}
+	
+	public void setGamePointsOBJMessage(Integer input){
+		gamePoints = input;
 	}
 	
 	public String getMessageOBJMessage(){
@@ -72,11 +82,12 @@ public class messageOBJ implements Serializable{
 		return trick;
 	}
 	
-	public void setClientOBJMessage(clientInformation inCLient){
-		client = inCLient;
+	public Integer getCurrentPointsOBJMessage(){
+		return currentPoints;
 	}
 	
-	public clientInformation getClientOBJMessage(){
-		return client;
+	public Integer getGamePointsOBJMessage(){
+		return gamePoints;
 	}
+	
 }

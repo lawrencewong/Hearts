@@ -248,15 +248,17 @@ public class Servers {
 		        					nextTurn = 4;
 		        				}
 		        				serverLogtextArea.append("NEXT: " + nextTurn + "\n");
+		        				
+		        				
+		        				/// START NEXT HAND 
 	        				}
-	        				
 	        				
 	        				
 
 	        				// PLAY ROUND
 	        				
 	        				if(cardLaid == 4){
-	        					System.out.println("CS: " +  clientInfoList.size());
+	        					serverLogtextArea.append("All cards laid down for the trick. Now calculating trick winner \n");
 	        					Card bestCard = new Card();
 	        					bestCard = clientInfoList.get(leader).getActiveCard();
 	        					
@@ -265,16 +267,15 @@ public class Servers {
 	        						serverLogtextArea.append("Player: " + clientInfoList.get(i).getUsernameCI() + " played: " + clientInfoList.get(i).getActiveCard().getSpriteURL() + " \n");
 	        						// Check for the same suit
 	        						if(bestCard.getSuit().equals(clientInfoList.get(i).getActiveCard().getSuit())){
-	        							System.out.println("POER OFF " + bestCard.getPower() + "  " +  clientInfoList.get(i).getActiveCard().getPower());
 	        							if(bestCard.getPower() > clientInfoList.get(i).getActiveCard().getPower()){
-	        								System.out.println(bestCard.getSpriteURL() + " beat out " +  clientInfoList.get(i).getActiveCard().getSpriteURL());
+	        								serverLogtextArea.append(bestCard.getSpriteURL() + " beat out " +  clientInfoList.get(i).getActiveCard().getSpriteURL());
 	        							}else if(bestCard.getPower() < clientInfoList.get(i).getActiveCard().getPower()){
-	        								System.out.println(clientInfoList.get(i).getActiveCard().getSpriteURL() + " beat out " +  bestCard.getSpriteURL());
+	        								serverLogtextArea.append(clientInfoList.get(i).getActiveCard().getSpriteURL() + " beat out " +  bestCard.getSpriteURL());
 	        								bestCard = clientInfoList.get(i).getActiveCard();
 	        								leader = i;					
 	        							}
 	        						}else{
-	        							System.out.println(bestCard.getSpriteURL() + " beat out " +  clientInfoList.get(i).getActiveCard().getSpriteURL());
+	        							serverLogtextArea.append(bestCard.getSpriteURL() + " beat out " +  clientInfoList.get(i).getActiveCard().getSpriteURL());
 	        						}
 	        						
 	        						// Add hearts or QS
@@ -294,9 +295,11 @@ public class Servers {
 	        					trickPoints = 0;
 	        					
 	        					for (int i = 0; i < clientInfoList.size(); i++) {
-	        						System.out.println(clientInfoList.get(i).getUsernameCI() + " GOT THIS MANY POINTS: " + clientInfoList.get(i).getCurrentPointsCI());
+	        						serverLogtextArea.append(clientInfoList.get(i).getUsernameCI() + " GOT THIS MANY POINTS: " + clientInfoList.get(i).getCurrentPointsCI() + "  TOTAL GAME POINTS: " + clientInfoList.get(i).getGamePointsCI()+ "\n");
 	        						updateScores(clientInfoList.get(i));
 	        					}
+	        					
+	        					serverLogtextArea.append("NEXT: " + nextTurn + "\n");
 	        					
 	        					
 	        					
@@ -328,6 +331,8 @@ public class Servers {
 	        						dealCard(clientInfoList.get(j), deck[i]);
 	        						break;
 	        					}
+	        					clientInfoList.get(j).setCurrentPointsCI(0);
+	        					clientInfoList.get(j).setGamePointsCI(0);
 	        				}
 	        	        }
 	        			
@@ -572,13 +577,15 @@ public class Servers {
 	}
 	
 	private static void updateScores(clientInformation clientInformation) {
-		messageOBJ passCardMessage = new messageOBJ();
-		passCardMessage.setTypeOBJMessage("US");
+		messageOBJ updateScoresMessage = new messageOBJ();
+		updateScoresMessage.setTypeOBJMessage("US");
+		updateScoresMessage.setUsernameOBJMessage(clientInformation.getUsernameCI());
 		for(int i = 0; i < clientInfoList.size(); i++){
-			passCardMessage.setClientOBJMessage(clientInfoList.get(i));
-			passCardMessage.setUsernameOBJMessage(clientInfoList.get(i).getUsernameCI());
-			passCardMessage.setTrickOBJMessage(trick);
-			outMessage = passCardMessage;
+			updateScoresMessage.setMessageOBJMessage(clientInfoList.get(i).getUsernameCI());
+			updateScoresMessage.setCurrentPointsOBJMessage(clientInfoList.get(i).getCurrentPointsCI());
+			updateScoresMessage.setGamePointsOBJMessage(clientInfoList.get(i).getGamePointsCI());
+			updateScoresMessage.setTrickOBJMessage(trick);
+			outMessage = updateScoresMessage;
 			sendClientObject(clientInformation);
 		}
 	}

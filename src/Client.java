@@ -1014,7 +1014,6 @@ public class Client {
 			byte[] receiveData = new byte[1024];
 			
 			while(true){
-				checkUpdate();
 				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
                 try {
 					clientSocket.receive(receivePacket);
@@ -1091,7 +1090,6 @@ public class Client {
                 	}else if(receiveMessage.getTypeOBJMessage().equals("SC")){
                 		trickNumber = receiveMessage.getTrickOBJMessage();
                 		Integer labelToEdit = trickNumber;
-                		System.out.println("LABEL: " + labelToEdit);
                 		if( receiveMessage.getMessageOBJMessage().equals(leftName.getText())){
                 			ImageIcon imageTopIcon = new ImageIcon(receiveMessage.getCardOBJMessage().getSpriteURL());
                      		lc.setIcon(imageTopIcon);
@@ -1114,18 +1112,16 @@ public class Client {
                 		myTurn = true;
                 		System.out.println(" ACTUAL MY TURN" + firstTurn + " " + myTurn);
                 	}else if(receiveMessage.getTypeOBJMessage().equals("US")){
-                		System.out.println("SEFA");
-//                		trickNumber = receiveMessage.getTrickOBJMessage();
-                		
-//                		if(receiveMessage.getUsernameOBJMessage().equals(bottomName.getText())){
-//                			bottomScore.setText(receiveMessage.getClientOBJMessage().getCurrentPointsCI() + "(" + receiveMessage.getClientOBJMessage().getGamePointsCI() +  ")");
-//                		}else if(receiveMessage.getUsernameOBJMessage().equals(topName.getText())){
-//                			topScore.setText(receiveMessage.getClientOBJMessage().getCurrentPointsCI() + "(" + receiveMessage.getClientOBJMessage().getGamePointsCI() +  ")");
-//                		}else if(receiveMessage.getUsernameOBJMessage().equals(leftName.getText())){
-//                			leftScore.setText(receiveMessage.getClientOBJMessage().getCurrentPointsCI() + "(" + receiveMessage.getClientOBJMessage().getGamePointsCI() +  ")");
-//                		}else if(receiveMessage.getUsernameOBJMessage().equals(rightName.getText())){
-//                			rightScore.setText(receiveMessage.getClientOBJMessage().getCurrentPointsCI() + "(" + receiveMessage.getClientOBJMessage().getGamePointsCI() +  ")");
-//                		}
+                		trickNumber = receiveMessage.getTrickOBJMessage();
+	               		if(receiveMessage.getMessageOBJMessage().equals(bottomName.getText())){
+	                			bottomScore.setText(receiveMessage.getCurrentPointsOBJMessage()+ "(" + receiveMessage.getGamePointsOBJMessage() +  ")");
+	                	}else if(receiveMessage.getMessageOBJMessage().equals(topName.getText())){
+	                			topScore.setText(receiveMessage.getCurrentPointsOBJMessage() + "(" + receiveMessage.getGamePointsOBJMessage() +  ")");
+	              		}else if(receiveMessage.getMessageOBJMessage().equals(leftName.getText())){
+	               			leftScore.setText(receiveMessage.getCurrentPointsOBJMessage() + "(" + receiveMessage.getGamePointsOBJMessage() +  ")");
+	               		}else if(receiveMessage.getMessageOBJMessage().equals(rightName.getText())){
+	              			rightScore.setText(receiveMessage.getCurrentPointsOBJMessage() + "(" + receiveMessage.getGamePointsOBJMessage() +  ")");
+	                		}
                 	}
                 	
                 } catch (ClassNotFoundException e){
@@ -1199,7 +1195,6 @@ public class Client {
 				e.printStackTrace();
 			}
 			outMessage = null;
-			checkUpdate();
 		}
 	}
 }
