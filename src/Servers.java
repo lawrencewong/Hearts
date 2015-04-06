@@ -232,6 +232,7 @@ public class Servers {
 				        			}
 			        				clientInformation temp = new clientInformation();
 			        				temp = firstCard();
+			        				serverLogtextArea.append("New LEAD:" + clientInfoList.get(leader).getSeatingCI());
 			        				nextTurn = temp.getSeatingCI();
 			        				nextTurn = nextTurn + 1;
 			        				nextTurn = nextTurn%4;
@@ -334,7 +335,7 @@ public class Servers {
 	        						}
 	
 	        						for (int i = 0; i < clientInfoList.size(); i++) {
-	        							if(clientInfoList.get(i).getGamePointsCI() == 100){
+	        							if(clientInfoList.get(i).getGamePointsCI() >= 100){
 	        								System.out.println("Game over");
 	        								// GAME OVER
 	        							}
@@ -359,7 +360,7 @@ public class Servers {
 	        						    Thread.currentThread().interrupt();
 	        						}
 	        						newTrick();
-
+	        						trickPoints = 0;
 	        						serverLogtextArea.append("Asking new leader. : " + clientInfoList.get(leader).getSeatingCI() + "\n");
 	        						leadCard();
 	        						nextTurn = nextTurn + 1;

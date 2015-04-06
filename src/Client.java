@@ -166,7 +166,6 @@ public class Client {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.getContentPane().setBackground(new Color(0, 100, 0));
 		frame.getContentPane().setForeground(Color.BLACK);
 		frame.setTitle("Hearts @ " + IPAddress);
 		frame.getContentPane().setLayout(null);
@@ -222,7 +221,8 @@ public class Client {
 		frame.getContentPane().add(btnExit);
 		
 		bottomHandpanel = new JPanel();
-		bottomHandpanel.setBackground(new Color(0, 100, 0));
+		//bottomHandpanel.setBackground(new Color(0, 100, 0));
+		bottomHandpanel.setOpaque(false);
 		bottomHandpanel.setBounds(120, 584, 880, 100);
 		frame.getContentPane().add(bottomHandpanel);
 		bottomHandpanel.setLayout(new GridLayout(1, 13, 0, 0));
@@ -1136,7 +1136,8 @@ public class Client {
 		bottomHandpanel.add(bhc12);
 		
 		leftHandpanel = new JPanel();
-		leftHandpanel.setBackground(new Color(0, 100, 0));
+		//leftHandpanel.setBackground(new Color(0, 100, 0));
+		leftHandpanel.setOpaque(false);
 		leftHandpanel.setBounds(10, 29, 100, 600);
 		frame.getContentPane().add(leftHandpanel);
 		leftHandpanel.setLayout(new GridLayout(13, 1, 0, 0));
@@ -1181,7 +1182,8 @@ public class Client {
 		leftHandpanel.add(lhc12);
 		
 		rightHandPanel = new JPanel();
-		rightHandPanel.setBackground(new Color(0, 100, 0));
+		//rightHandPanel.setBackground(new Color(0, 100, 0));
+		rightHandPanel.setOpaque(false);
 		rightHandPanel.setBounds(1010, 29, 100, 600);
 		frame.getContentPane().add(rightHandPanel);
 		rightHandPanel.setLayout(new GridLayout(13, 1, 0, 0));
@@ -1226,7 +1228,8 @@ public class Client {
 		rightHandPanel.add(rhc0);
 		
 		topHandpanel = new JPanel();
-		topHandpanel.setBackground(new Color(0, 100, 0));
+		//topHandpanel.setBackground(new Color(0, 100, 0));
+		topHandpanel.setOpaque(false);
 		topHandpanel.setBounds(235, 11, 600, 100);
 		frame.getContentPane().add(topHandpanel);
 		topHandpanel.setLayout(new GridLayout(0, 13, 0, 0));
@@ -1271,7 +1274,8 @@ public class Client {
 		topHandpanel.add(thc0);
 		
 		leftCardPanel = new JPanel();
-		leftCardPanel.setBackground(new Color(0, 100, 0));
+		//leftCardPanel.setBackground(new Color(0, 100, 0));
+		leftCardPanel.setOpaque(false);
 		leftCardPanel.setBounds(336, 246, 85, 135);
 		frame.getContentPane().add(leftCardPanel);
 		leftCardPanel.setLayout(new GridLayout(1, 0, 0, 0));
@@ -1280,18 +1284,20 @@ public class Client {
 		leftCardPanel.add(lc);
 		
 		rightCardPanel = new JPanel();
-		rightCardPanel.setBackground(new Color(0, 100, 0));
+		//rightCardPanel.setBackground(new Color(0, 100, 0));
 		rightCardPanel.setBounds(641, 246, 85, 135);
+		rightCardPanel.setOpaque(false);
 		frame.getContentPane().add(rightCardPanel);
 		rightCardPanel.setLayout(new GridLayout(1, 0, 0, 0));
 		
 		rc = new JLabel("");
-		rc.setForeground(new Color(0, 100, 0));
-		rc.setBackground(new Color(0, 100, 0));
+		//rc.setForeground(new Color(0, 100, 0));
+		//rc.setBackground(new Color(0, 100, 0));
 		rightCardPanel.add(rc);
 		
 		bottomCardPanel = new JPanel();
-		bottomCardPanel.setBackground(new Color(0, 100, 0));
+		//bottomCardPanel.setBackground(new Color(0, 100, 0));
+		bottomCardPanel.setOpaque(false);
 		bottomCardPanel.setBounds(491, 368, 85, 135);
 		frame.getContentPane().add(bottomCardPanel);
 		bottomCardPanel.setLayout(new GridLayout(1, 0, 0, 0));
@@ -1301,14 +1307,15 @@ public class Client {
 		bottomHandpanel.setVisible(false);
 		
 		topCardPanel = new JPanel();
-		topCardPanel.setBackground(new Color(0, 100, 0));
+		//topCardPanel.setBackground(new Color(0, 100, 0));
+		topCardPanel.setOpaque(false);
 		topCardPanel.setBounds(491, 161, 85, 135);
 		frame.getContentPane().add(topCardPanel);
 		topCardPanel.setLayout(new GridLayout(1, 0, 0, 0));
 		
 		tc = new JLabel("");
-		tc.setForeground(new Color(0, 100, 0));
-		tc.setBackground(new Color(0, 100, 0));
+		//tc.setForeground(new Color(0, 100, 0));
+		//tc.setBackground(new Color(0, 100, 0));
 		topCardPanel.add(tc);
 		
 		lblIn = new JLabel("Instructions");
@@ -1338,10 +1345,12 @@ public class Client {
 		frame.getContentPane().add(bottomName);
 		
 		instructionArea = new JTextArea();
+		instructionArea.setEditable(false);
 		instructionArea.setWrapStyleWord(true);
 		instructionArea.setLineWrap(true);
 		instructionArea.setForeground(Color.WHITE);
-		instructionArea.setBackground(new Color(0, 100, 0));
+		instructionArea.setOpaque(false);
+		//instructionArea.setBackground(new Color(0, 100, 0));
 		instructionArea.setBounds(138, 407, 275, 166);
 		instructionArea.setVisible(false);
 		frame.getContentPane().add(instructionArea);
@@ -1424,6 +1433,16 @@ public class Client {
 		rightScore.setForeground(Color.WHITE);
 		rightScore.setBounds(822, 264, 178, 50);
 		frame.getContentPane().add(rightScore);
+		topCardPanel.setOpaque(false);
+		topHandpanel.setOpaque(false);
+		leftCardPanel.setOpaque(false);
+		leftHandpanel.setOpaque(false);
+		rightCardPanel.setOpaque(false);
+		rightHandPanel.setOpaque(false);
+		JLabel background = new JLabel();
+		background.setIcon(new ImageIcon("sprites\\background.png"));
+		background.setBounds(0, 0, 1134, 705);
+		frame.getContentPane().add(background);
 
 		
 	}
@@ -1660,6 +1679,7 @@ public class Client {
 				e.printStackTrace();
 			}
 			outMessage = null;
+			myLead = false;
 		}
 	}
 }
