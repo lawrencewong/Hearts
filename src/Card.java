@@ -5,7 +5,7 @@ public class Card implements Serializable{
 	private String suit;
 	private String rank;
 	private String sprite;
-	private Integer internalPower;
+	private int internalPower;
 	
 	public Card(){
 		suit = null;
@@ -26,7 +26,7 @@ public class Card implements Serializable{
 		sprite = inSprite;
 	}
 	
-	public void setPower(Integer power) {
+	public void setPower(int power) {
 		internalPower = power;
 	}
 
@@ -42,7 +42,7 @@ public class Card implements Serializable{
 		return sprite;
 	}
 	
-	public Integer getPower() {
+	public int getPower() {
 		return internalPower;
 	}
 }

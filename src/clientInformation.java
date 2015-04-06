@@ -15,6 +15,7 @@ public class clientInformation implements Serializable{
 	private int currentPoints;
 	private int gamePoints;
 	private Card activeCard;
+	private int penaltyCards;
 	
 	public clientInformation(){
 		username = null;
@@ -107,5 +108,17 @@ public class clientInformation implements Serializable{
 	public Card getActiveCard(){
 		return activeCard;
 	}
+	
+	
+	public void setpenaltyCards(Integer active){
+		penaltyCards = active;
+	}
+	
+	public int getpenaltyCards(){
+		return penaltyCards;
+	}
+	
+	
+	
 
 }

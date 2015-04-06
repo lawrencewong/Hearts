@@ -190,7 +190,9 @@ public class Servers {
 	        				index = i;
 	        			}
 	        		}
+	        		serverLogtextArea.append("GOT " +  receiveMessageOBJ.getCardOBJMessage().getSpriteURL() +  " P: " + receiveMessageOBJ.getCardOBJMessage().getPower() +  "  C: "+receiveMessageOBJ.getCardOBJMessage().getSuit() + receiveMessageOBJ.getCardOBJMessage().getRank() + " FROM " + receiveMessageOBJ.getUsernameOBJMessage() + "\n");
 	        		clientInfoList.get(index).setActiveCard(receiveMessageOBJ.getCardOBJMessage());
+	        		serverLogtextArea.append("CHECK " +  clientInfoList.get(index).getActiveCard().getSpriteURL() +  " P: " +clientInfoList.get(index).getActiveCard().getPower() +  "  C: "+clientInfoList.get(index).getActiveCard().getSuit() + clientInfoList.get(index).getActiveCard().getRank() + " FROM " + receiveMessageOBJ.getUsernameOBJMessage() + "\n");
 	        		for(int i= 0; i < clientInfoList.get(index).getHand().size(); i++){
 	        			if(  clientInfoList.get(index).getHand().get(i).getSpriteURL().equals(receiveMessageOBJ.getCardOBJMessage().getSpriteURL())){
 	        				 clientInfoList.get(index).getHand().remove(i);
@@ -219,9 +221,9 @@ public class Servers {
 	        	// Game start or continue
 	        	if(clientInfoList.size() == 4){
 	        		if(gameRunning == true){
-	        			serverLogtextArea.append("Game in process.\n");
+	        			serverLogtextArea.append("Game in process. This persons turn: " + nextTurn + "\n");
 	        			if(donePass == 12){
-	        				serverLogtextArea.append("Round: " + roundNumber + " Cards Laid: " + cardLaid + "\n");
+	        				serverLogtextArea.append("Trick: " + trick + " Cards Laid: " + cardLaid +  " LEAD:" + clientInfoList.get(leader).getSeatingCI() + " next " +  nextTurn +"\n");
 	        				if(trick == 1){
 	        					if(cardLaid == 0){
 	        						serverLogtextArea.append("Done passing.\n");
@@ -238,19 +240,19 @@ public class Servers {
 			        				}
 	        					}
 	        				}
-	        				if(cardLaid != 0){
-	        					serverLogtextArea.append("NOW ACTIVE : " + nextTurn  + "\n");
+	        				if(cardLaid != 0 && cardLaid !=4){
 		        				// Play 
-		        				activeCard(nextTurn);
-		        				nextTurn = nextTurn + 1;
-		        				nextTurn = nextTurn%4;
-		        				if(nextTurn == 0){
-		        					nextTurn = 4;
-		        				}
+	        					serverLogtextArea.append("WAITING ON: " + nextTurn + "\n");
+	        				
+	        						activeCard(nextTurn);
+	        						nextTurn = nextTurn + 1;
+			        				nextTurn = nextTurn%4;
+			        				if(nextTurn == 0){
+			        					nextTurn = 4;
+			        				}
+		        				
 		        				serverLogtextArea.append("NEXT: " + nextTurn + "\n");
 		        				
-		        				
-		        				/// START NEXT HAND 
 	        				}
 	        				
 	        				
@@ -266,16 +268,25 @@ public class Servers {
 	        					for (int i = 0; i < clientInfoList.size(); i++) {
 	        						serverLogtextArea.append("Player: " + clientInfoList.get(i).getUsernameCI() + " played: " + clientInfoList.get(i).getActiveCard().getSpriteURL() + " \n");
 	        						// Check for the same suit
-	        						if(bestCard.getSuit().equals(clientInfoList.get(i).getActiveCard().getSuit())){
-	        							if(bestCard.getPower() > clientInfoList.get(i).getActiveCard().getPower()){
-	        								serverLogtextArea.append(bestCard.getSpriteURL() + " beat out " +  clientInfoList.get(i).getActiveCard().getSpriteURL());
-	        							}else if(bestCard.getPower() < clientInfoList.get(i).getActiveCard().getPower()){
-	        								serverLogtextArea.append(clientInfoList.get(i).getActiveCard().getSpriteURL() + " beat out " +  bestCard.getSpriteURL());
-	        								bestCard = clientInfoList.get(i).getActiveCard();
-	        								leader = i;					
-	        							}
+	        						serverLogtextArea.append("VS: " + clientInfoList.get(leader).getUsernameCI() + " " + clientInfoList.get(i).getUsernameCI()+ " \n");
+	        						if(!clientInfoList.get(leader).getUsernameCI().equals(clientInfoList.get(i).getUsernameCI())){
+	        							if(bestCard.getSuit().equals(clientInfoList.get(i).getActiveCard().getSuit())){
+		        							if(bestCard.getPower() > clientInfoList.get(i).getActiveCard().getPower()){
+		        								serverLogtextArea.append(bestCard.getSpriteURL() + ": " + bestCard.getPower() + ": " + bestCard.getSuit() + bestCard.getRank() +" beat out " +  clientInfoList.get(i).getActiveCard().getSpriteURL() + ": " +  clientInfoList.get(i).getActiveCard().getPower() +  ": " + clientInfoList.get(i).getActiveCard().getSuit() + clientInfoList.get(i).getActiveCard().getRank() +" \n");
+		        							}else if(bestCard.getPower() < clientInfoList.get(i).getActiveCard().getPower()){
+		        								serverLogtextArea.append(clientInfoList.get(i).getActiveCard().getSpriteURL() + ": " +  clientInfoList.get(i).getActiveCard().getPower() + ": " + clientInfoList.get(i).getActiveCard().getSuit() + clientInfoList.get(i).getActiveCard().getRank() + " beat out " +  bestCard.getSpriteURL() + ": " + bestCard.getPower() + ": " + bestCard.getSuit() + bestCard.getRank() +" \n");
+		        								bestCard.setPower(clientInfoList.get(i).getActiveCard().getPower());
+		        								bestCard.setRank(clientInfoList.get(i).getActiveCard().getRank());
+		        								bestCard.setSpriteURL(clientInfoList.get(i).getActiveCard().getSpriteURL());
+		        								bestCard.setSuit(clientInfoList.get(i).getActiveCard().getSuit());
+		        								leader = i;		
+		        								serverLogtextArea.append("assigning new leader: " + clientInfoList.get(leader) + "\n");
+		        							}
+		        						}else{
+		        							serverLogtextArea.append(bestCard.getSpriteURL() + " beat out " +  clientInfoList.get(i).getActiveCard().getSpriteURL());
+		        						}
 	        						}else{
-	        							serverLogtextArea.append(bestCard.getSpriteURL() + " beat out " +  clientInfoList.get(i).getActiveCard().getSpriteURL());
+	        							serverLogtextArea.append(" BAD VS: " + clientInfoList.get(leader).getUsernameCI() + " " + clientInfoList.get(i).getUsernameCI()+ " \n");
 	        						}
 	        						
 	        						// Add hearts or QS
@@ -288,34 +299,75 @@ public class Servers {
 								}
 	        					
 	        					// Detemrine who is next because of win
-	        					nextTurn = clientInfoList.get(leader).getSeatingCI();
+
 	        					
 	        					// Assign points
-	        					clientInfoList.get(leader).setCurrentPointsCI(trickPoints);
+	        					clientInfoList.get(leader).setCurrentPointsCI(clientInfoList.get(leader).getCurrentPointsCI() + trickPoints);
 	        					trickPoints = 0;
 	        					
 	        					for (int i = 0; i < clientInfoList.size(); i++) {
 	        						serverLogtextArea.append(clientInfoList.get(i).getUsernameCI() + " GOT THIS MANY POINTS: " + clientInfoList.get(i).getCurrentPointsCI() + "  TOTAL GAME POINTS: " + clientInfoList.get(i).getGamePointsCI()+ "\n");
 	        						updateScores(clientInfoList.get(i));
 	        					}
-	        					
-	        					serverLogtextArea.append("NEXT: " + nextTurn + "\n");
-	        					
-	        					
-	        					
-	        					
-	        					
-	        					
-	        					
-	        					
-	        					
-	        					
+        						nextTurn = clientInfoList.get(leader).getSeatingCI();
+	        					serverLogtextArea.append("NEW LEAD: " + nextTurn + "\n");
+	        					cardLaid  = 0;
 	        					
 	        					if(trick == 13){
-	        						// Calculate round results
+	        						for (int i = 0; i < clientInfoList.size(); i++) {
+	        							if(clientInfoList.get(i).getCurrentPointsCI() == 26){
+	        								serverLogtextArea.append(clientInfoList.get(i).getUsernameCI() + "shot the moon.\n");
+	        								for (int k = 0; k < clientInfoList.size(); k++) {
+	        									if(!clientInfoList.get(i).getUsernameCI().equals(clientInfoList.get(k).getUsernameCI())){
+	        										clientInfoList.get(k).setCurrentPointsCI(26);
+	        									}
+	        								}
+	        								clientInfoList.get(i).setCurrentPointsCI(0);
+	        								break;
+	        							}
+	        							
+	        						}
+	        						
+	        						for (int i = 0; i < clientInfoList.size(); i++) {
+	        							clientInfoList.get(i).setGamePointsCI(clientInfoList.get(i).getGamePointsCI() + clientInfoList.get(i).getCurrentPointsCI());
+	        							 clientInfoList.get(i).setCurrentPointsCI(0);
+	        						}
+	
+	        						for (int i = 0; i < clientInfoList.size(); i++) {
+	        							if(clientInfoList.get(i).getGamePointsCI() == 100){
+	        								System.out.println("Game over");
+	        								// GAME OVER
+	        							}
+	        						}
+	        						
+	        						for (int i = 0; i < clientInfoList.size(); i++) {
+		        						updateScores(clientInfoList.get(i));
+		        					}
+	        						// reset round
 	        						trick = 0;
+	        						try {
+	        						    Thread.sleep(1000);                 //1000 milliseconds is one second.
+	        						} catch(InterruptedException ex) {
+	        						    Thread.currentThread().interrupt();
+	        						}
+	        						newHand();
 	        					}else{
 	        						trick++;
+	        						try {
+	        						    Thread.sleep(1000);                 //1000 milliseconds is one second.
+	        						} catch(InterruptedException ex) {
+	        						    Thread.currentThread().interrupt();
+	        						}
+	        						newTrick();
+
+	        						serverLogtextArea.append("Asking new leader. : " + clientInfoList.get(leader).getSeatingCI() + "\n");
+	        						leadCard();
+	        						nextTurn = nextTurn + 1;
+			        				nextTurn = nextTurn%4;
+			        				if(nextTurn == 0){
+			        					nextTurn = 4;
+			        				}
+		        					
 	        					}
 	        					
 	        				}
@@ -325,6 +377,7 @@ public class Servers {
 	        			gameRunning = true;
 	        			serverLogtextArea.append("All players ready and seated. Commence game! \n");
 	        			shuffleDeck();
+	        		        
 	        			for(int i = 0; i < deck.length; i++){
 	        				for( int j =0; j <clientInfoList.size(); j++ ){
 	        					if(clientInfoList.get(j).getSeatingCI() == i%4 + 1){
@@ -462,6 +515,14 @@ public class Servers {
 		return temp;
 	}
 	
+	public static void leadCard(){
+		messageOBJ passCardMessage = new messageOBJ();
+		passCardMessage.setTypeOBJMessage("LP");
+		passCardMessage.setUsernameOBJMessage(clientInfoList.get(leader).getUsernameCI());
+		outMessage = passCardMessage;
+		sendClientObject(clientInfoList.get(leader));
+	}
+	
 	public static void activeCard(Integer nextUp){
 		clientInformation temp = new clientInformation();
 		for(int i = 0; i < clientInfoList.size(); i++){
@@ -476,6 +537,39 @@ public class Servers {
 		outMessage = passCardMessage;
 		sendClientObject(temp);
 	}
+	
+	public static void newHand(){
+		trick = 1;
+		donePass = 0 ;
+		brokenHeart = false;
+		for(int i=0; i <clientInfoList.size(); i++){
+			messageOBJ newHandMessage = new messageOBJ();
+			newHandMessage.setTypeOBJMessage("NH");
+			newHandMessage.setMessageOBJMessage("");
+			newHandMessage.setUsernameOBJMessage(clientInfoList.get(i).getUsernameCI());
+			outMessage = newHandMessage;
+			sendClientObject(clientInfoList.get(i));
+		}
+		
+		shuffleDeck();
+        
+		for(int i = 0; i < deck.length; i++){
+			for( int j =0; j <clientInfoList.size(); j++ ){
+				if(clientInfoList.get(j).getSeatingCI() == i%4 + 1){
+					dealCard(clientInfoList.get(j), deck[i]);
+					break;
+				}
+				clientInfoList.get(j).setCurrentPointsCI(0);
+			}
+        }
+		
+		// First instruction
+		for(int i=0; i <clientInfoList.size(); i++){
+			sendInstructions(clientInfoList.get(i), 0);
+		}	     
+		sendSeating();
+	}
+	
 	
 	public static void sendSeating(){
 		serverLogtextArea.append("Sending seating plan.");
@@ -589,6 +683,22 @@ public class Servers {
 			sendClientObject(clientInformation);
 		}
 	}
+	
+	private static void newTrick() {
+		messageOBJ newTrickMessage = new messageOBJ();
+		newTrickMessage.setTypeOBJMessage("NT");
+		Integer broken = 0;
+		if(brokenHeart){
+			broken = 1;
+		}
+		for(int i = 0; i < clientInfoList.size(); i++){
+			newTrickMessage.setUsernameOBJMessage(clientInfoList.get(i).getUsernameCI());
+			newTrickMessage.setTrickOBJMessage(trick);
+			newTrickMessage.setDataOBJMessage(broken);
+			outMessage = newTrickMessage;
+			sendClientObject(clientInfoList.get(i));
+		}
+	}
 
 	
 	public static void showCard(messageOBJ activeUserInfo, clientInformation reciepent, Card card){
@@ -599,7 +709,7 @@ public class Servers {
 		passCardMessage.setDataOBJMessage(activeUserInfo.getDataOBJMessage());
 		passCardMessage.setUsernameOBJMessage(reciepent.getUsernameCI());
 		passCardMessage.setCardOBJMessage(card);
-		passCardMessage.setTrickOBJMessage(roundNumber);
+		passCardMessage.setTrickOBJMessage(trick);
 		outMessage = passCardMessage;
 		sendClientObject(reciepent);
 	}
@@ -610,7 +720,7 @@ public class Servers {
 			String tempSuit = deck[i].getSuit();
 			String tempRank = deck[i].getRank();
 			String tempSpriteURL = deck[i].getSpriteURL();
-			Integer tempPower= deck[i].getPower();
+			int tempPower= deck[i].getPower();
 			
 			deck[i].setSuit(deck[index].getSuit());
 			deck[i].setRank(deck[index].getRank());
