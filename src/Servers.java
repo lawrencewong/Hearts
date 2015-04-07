@@ -22,6 +22,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.security.AllPermission;
 import java.sql.ClientInfoStatus;
 import java.util.ArrayList;
 
@@ -39,13 +40,14 @@ public class Servers {
 	static Integer playersReady = 0;
 	private static messageOBJ outMessage = null;
 	static Integer donePass = 0;
-	static Integer roundNumber = 1;
 	static Integer trick = 1;
 	static Integer cardLaid = 0;
 	static Integer nextTurn = 0;
 	static Integer leader = 0;
 	static Integer trickPoints = 0;
+	static Integer playAgain = 0;
 	static Boolean brokenHeart = false;
+	static Boolean gameOver = false;
 	// Cards
 	static Card[] deck = new Card[52];
 	static String[] suit = {"S", "H", "C", "D"};
@@ -109,6 +111,7 @@ public class Servers {
 	        	// Check number of players if LN
 	        	serverLogtextArea.append("Number of players: " + clientInfoList.size() + " Number of players ready: " + playersReady + "\n");
 	        	if(receiveMessageOBJ.getTypeOBJMessage().equals("LN")){
+	        		playAgain= 0;
 	        		inClient.setUsernameCI(receiveMessageOBJ.getUsernameOBJMessage());
         			inClient.setIPCI(IPAddress);
         			inClient.setPortCI(port);
@@ -131,14 +134,51 @@ public class Servers {
 					}
 	        	}else if(receiveMessageOBJ.getTypeOBJMessage().equals("R")){ // Player is ready
 	        		serverLogtextArea.append(receiveMessageOBJ.getUsernameOBJMessage() + " is ready. \n");
+	        		boolean found = false;
 	        		for(int i = 0; i < clientInfoList.size(); i++){
 						if(clientInfoList.get(i).getUsernameCI().equals(receiveMessageOBJ.getUsernameOBJMessage())){
 							clientInfoList.get(i).setReadyCI(true);
 							clientInfoList.get(i).setSeatingCI(playersReady + 1);
+							clientInfoList.get(i).setIPCI(IPAddress);
+							clientInfoList.get(i).setPortCI(port);
 							serverLogtextArea.append(receiveMessageOBJ.getUsernameOBJMessage() + " is sitting at seat: " + clientInfoList.get(i).getSeatingCI() + "\n");
 							playersReady++;
 						}
 					}
+	        		
+	        		for(int i = 0; i < clientInfoList.size(); i++){
+						if(clientInfoList.get(i).getUsernameCI().equals(receiveMessageOBJ.getUsernameOBJMessage())){
+							found = true;
+							break;
+						}
+					}
+	        		
+	        		if(found == false){
+	        			if(clientInfoList.size() < 4){
+	        				inClient.setUsernameCI(receiveMessageOBJ.getUsernameOBJMessage());
+	            			inClient.setIPCI(IPAddress);
+	            			inClient.setPortCI(port);
+	            			serverLogtextArea.append(receiveMessageOBJ.getUsernameOBJMessage() + " @ " + IPAddress + " has just joined the game. \n");
+		        			clientInfoList.add(inClient);
+	            			for(int i = 0; i < clientInfoList.size(); i++){
+	    						if(clientInfoList.get(i).getUsernameCI().equals(inClient.getUsernameCI())){
+	    							clientInfoList.get(i).setReadyCI(true);
+	    							clientInfoList.get(i).setSeatingCI(playersReady + 1);
+	    							clientInfoList.get(i).setIPCI(IPAddress);
+	    							clientInfoList.get(i).setPortCI(port);
+	    							serverLogtextArea.append(inClient.getUsernameCI() + " is sitting at seat: " + clientInfoList.get(i).getSeatingCI() + "\n");
+	    						}
+	    					}
+		        			
+		        			
+		        			playersReady++;
+		        		}else{
+		        			serverLogtextArea.append("No Room.\n");
+		        			gameFull(inClient);
+		        			continue;
+		        		}
+	        		}
+
 	        	}else if(receiveMessageOBJ.getTypeOBJMessage().equals("PC")){ // Passing a card
 	        		donePass++;
 	        		for(int i = 0; i < clientInfoList.size(); i++){
@@ -205,8 +245,18 @@ public class Servers {
 	        		}
 	        		cardLaid++;
 	        		// Next person
+	        	}else if(receiveMessageOBJ.getTypeOBJMessage().equals("PN")){ // Passing a card
+	        		playAgain++;
+	        		if(playAgain == 4){
+	        			newHand();
+	        			playAgain = 0;
+	        		}
+	        		
+	        	}else if(receiveMessageOBJ.getTypeOBJMessage().equals("PL")){ // Passing a card
+	        		serverLogtextArea.append(receiveMessageOBJ.getTypeOBJMessage() + " quit.");
+	        		playAgain = 0;
+	        		gameOverSetUp();
 	        	}
-	        	
 	        	
 	        	// Print hands
     			for( int j =0; j <clientInfoList.size(); j++ ){
@@ -263,7 +313,12 @@ public class Servers {
 	        				if(cardLaid == 4){
 	        					serverLogtextArea.append("All cards laid down for the trick. Now calculating trick winner \n");
 	        					Card bestCard = new Card();
-	        					bestCard = clientInfoList.get(leader).getActiveCard();
+
+//	        					bestCard = clientInfoList.get(leader).getActiveCard();
+	        					bestCard.setPower(clientInfoList.get(leader).getActiveCard().getPower());
+								bestCard.setRank(clientInfoList.get(leader).getActiveCard().getRank());
+								bestCard.setSpriteURL(clientInfoList.get(leader).getActiveCard().getSpriteURL());
+								bestCard.setSuit(clientInfoList.get(leader).getActiveCard().getSuit());
 	        					
 	        					// CHECK WHO WON THE TRICK
 	        					for (int i = 0; i < clientInfoList.size(); i++) {
@@ -286,20 +341,20 @@ public class Servers {
 		        						}else{
 		        							serverLogtextArea.append(bestCard.getSpriteURL() + " beat out " +  clientInfoList.get(i).getActiveCard().getSpriteURL());
 		        						}
-	        						}else{
-	        							serverLogtextArea.append(" BAD VS: " + clientInfoList.get(leader).getUsernameCI() + " " + clientInfoList.get(i).getUsernameCI()+ " \n");
 	        						}
 	        						
+
+								}
+	        					
+	        					for (int i = 0; i < clientInfoList.size(); i++) {
 	        						// Add hearts or QS
 	        						if(clientInfoList.get(i).getActiveCard().getSuit().equals("H")){
 	        							trickPoints++;
 	        							brokenHeart = true;
 	        						}else if(clientInfoList.get(i).getActiveCard().getSuit().equals("S") && clientInfoList.get(i).getActiveCard().getRank().equals("Q")){
 	        							trickPoints = trickPoints + 13;
-	        						}
-								}
-	        					
-	        					// Detemrine who is next because of win
+	        						}		
+	        					}
 
 	        					
 	        					// Assign points
@@ -317,7 +372,7 @@ public class Servers {
 	        					if(trick == 13){
 	        						for (int i = 0; i < clientInfoList.size(); i++) {
 	        							if(clientInfoList.get(i).getCurrentPointsCI() == 26){
-	        								serverLogtextArea.append(clientInfoList.get(i).getUsernameCI() + "shot the moon.\n");
+	        								serverLogtextArea.append(clientInfoList.get(i).getUsernameCI() + " shot the moon.\n");
 	        								for (int k = 0; k < clientInfoList.size(); k++) {
 	        									if(!clientInfoList.get(i).getUsernameCI().equals(clientInfoList.get(k).getUsernameCI())){
 	        										clientInfoList.get(k).setCurrentPointsCI(26);
@@ -333,13 +388,6 @@ public class Servers {
 	        							clientInfoList.get(i).setGamePointsCI(clientInfoList.get(i).getGamePointsCI() + clientInfoList.get(i).getCurrentPointsCI());
 	        							 clientInfoList.get(i).setCurrentPointsCI(0);
 	        						}
-	
-	        						for (int i = 0; i < clientInfoList.size(); i++) {
-	        							if(clientInfoList.get(i).getGamePointsCI() >= 100){
-	        								System.out.println("Game over");
-	        								// GAME OVER
-	        							}
-	        						}
 	        						
 	        						for (int i = 0; i < clientInfoList.size(); i++) {
 		        						updateScores(clientInfoList.get(i));
@@ -351,7 +399,22 @@ public class Servers {
 	        						} catch(InterruptedException ex) {
 	        						    Thread.currentThread().interrupt();
 	        						}
-	        						newHand();
+	        						
+	        						for (int i = 0; i < clientInfoList.size(); i++) {
+	        							if(clientInfoList.get(i).getGamePointsCI() >= 100){
+	        								serverLogtextArea.append("Game over");
+	        								gameOver = true;
+	        								// GAME OVER
+	        							}
+	        						}
+	        						
+	        						if(gameOver == true){
+	        							gameOverSetUp();
+	        							gameOver = false;
+	        						}else{
+	        							newHandAllowLeave();  							
+	        						}
+	        						
 	        					}else{
 	        						trick++;
 	        						try {
@@ -418,7 +481,7 @@ public class Servers {
 	 */
 	private void initialize() throws IOException {
 		frmHeartsServer = new JFrame();
-		frmHeartsServer.getContentPane().setBackground(new Color(0, 100, 0));
+		frmHeartsServer.getContentPane().setBackground(new Color(245, 41, 41));
 		frmHeartsServer.getContentPane().setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -432,13 +495,69 @@ public class Servers {
 		JLabel lblServerLog = new JLabel("Server Log:");
 		lblServerLog.setBounds(10, 10, 200, 20);
 		lblServerLog.setFont(new Font("HelveticaNeueLT Pro 55 Roman", Font.PLAIN, 13));
-		lblServerLog.setForeground(new Color(255, 255, 255));
+		lblServerLog.setForeground(new Color(255, 251, 0));
 		frmHeartsServer.getContentPane().add(lblServerLog);
 		frmHeartsServer.setTitle("Hearts Server");
 		frmHeartsServer.setBounds(100, 100, 845, 525);
 		frmHeartsServer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 
+	}
+	public static void gameOverSetUp(){
+		playersReady = 0;
+		trick = 1;
+		gameRunning = false;
+		cardLaid = 0;
+		donePass = 0;
+		nextTurn = 0;
+		messageOBJ gameOverMessage = new messageOBJ();
+		gameOverMessage.setTypeOBJMessage("GO");
+		String results = "";
+		clientInformation winner;
+		System.out.println("TEST " + clientInfoList.get(0).getUsernameCI());
+		winner = clientInfoList.get(0);
+		boolean tie = false;
+		String winnerString = clientInfoList.get(0).getUsernameCI();
+		String winnerHeader = "Winner: ";
+		for(int i = 0; i < clientInfoList.size(); i++){
+			results = results + clientInfoList.get(i).getUsernameCI() + " has a a final score of " + clientInfoList.get(i).getGamePointsCI() + ".\n";
+			
+			if( winner.getUsernameCI() != clientInfoList.get(i).getUsernameCI()){
+					if(winner.getGamePointsCI() > clientInfoList.get(i).getGamePointsCI()){
+						winner = clientInfoList.get(i);
+						winnerString = clientInfoList.get(i).getUsernameCI();
+						tie = false;
+					}else if(winner.getGamePointsCI() < clientInfoList.get(i).getGamePointsCI()){
+						tie = false;
+					}else{
+						winnerString = winnerString + ", " + clientInfoList.get(i).getUsernameCI();
+						tie = true;
+					}		
+			}
+		}
+		if(tie == true){
+			winnerHeader = "Winners:  ";
+		}
+		
+		winnerHeader = winnerHeader + winnerString;
+		
+		serverLogtextArea.append(results + winnerHeader);
+		
+		for(int i = 0; i < clientInfoList.size(); i++){
+			gameOverMessage.setUsernameOBJMessage(clientInfoList.get(i).getUsernameCI());
+			gameOverMessage.setMessageOBJMessage(results + winnerHeader);
+			outMessage = gameOverMessage;
+			sendClientObject(clientInfoList.get(i));
+		}
+		try {
+		    Thread.sleep(1000);                 //1000 milliseconds is one second.
+		} catch(InterruptedException ex) {
+		    Thread.currentThread().interrupt();
+		}
+		for(int i = 0; i < clientInfoList.size(); i++){
+			askReady(clientInfoList.get(i));
+		}
+		clientInfoList.clear();
 	}
 	
 	public static void askReady( clientInformation client){
@@ -507,9 +626,9 @@ public class Servers {
 				}
 			}
 		}
+		whoseTurn();
 		messageOBJ passCardMessage = new messageOBJ();
 		passCardMessage.setTypeOBJMessage("FC");
-		passCardMessage.setMessageOBJMessage("");
 		passCardMessage.setUsernameOBJMessage(temp.getUsernameCI());
 		outMessage = passCardMessage;
 		sendClientObject(temp);
@@ -517,6 +636,7 @@ public class Servers {
 	}
 	
 	public static void leadCard(){
+		whoseTurn();
 		messageOBJ passCardMessage = new messageOBJ();
 		passCardMessage.setTypeOBJMessage("LP");
 		passCardMessage.setUsernameOBJMessage(clientInfoList.get(leader).getUsernameCI());
@@ -531,17 +651,20 @@ public class Servers {
 				temp = clientInfoList.get(i);
 			}
 		}
+		whoseTurn();
 		messageOBJ passCardMessage = new messageOBJ();
 		passCardMessage.setTypeOBJMessage("AC");
-		passCardMessage.setMessageOBJMessage("");
+		passCardMessage.setMessageOBJMessage(clientInfoList.get(leader).getActiveCard().getSuit());
 		passCardMessage.setUsernameOBJMessage(temp.getUsernameCI());
 		outMessage = passCardMessage;
 		sendClientObject(temp);
 	}
 	
 	public static void newHand(){
+		playAgain= 0;
 		trick = 1;
-		donePass = 0 ;
+		donePass = 0;
+		nextTurn = 0;
 		brokenHeart = false;
 		for(int i=0; i <clientInfoList.size(); i++){
 			messageOBJ newHandMessage = new messageOBJ();
@@ -569,6 +692,36 @@ public class Servers {
 			sendInstructions(clientInfoList.get(i), 0);
 		}	     
 		sendSeating();
+	}
+	
+	public static void newHandAllowLeave(){
+
+		for(int i=0; i <clientInfoList.size(); i++){
+			messageOBJ newHandMessage = new messageOBJ();
+			newHandMessage.setTypeOBJMessage("AL");
+			newHandMessage.setMessageOBJMessage("");
+			newHandMessage.setUsernameOBJMessage(clientInfoList.get(i).getUsernameCI());
+			outMessage = newHandMessage;
+			sendClientObject(clientInfoList.get(i));
+		}
+	}
+	
+	public static void whoseTurn(){
+		messageOBJ newHandMessage = new messageOBJ();
+		newHandMessage.setTypeOBJMessage("WT");
+		String activePlayer = "";
+		if(nextTurn == 0){
+			activePlayer = clientInfoList.get(leader).getUsernameCI();
+		}else{
+			activePlayer = clientInfoList.get(nextTurn - 1).getUsernameCI();
+		}
+				
+		for(int i = 0; i < clientInfoList.size(); i++){
+			newHandMessage.setMessageOBJMessage(activePlayer);
+			newHandMessage.setUsernameOBJMessage(clientInfoList.get(i).getUsernameCI());
+			outMessage = newHandMessage;
+			sendClientObject(clientInfoList.get(i));
+		}
 	}
 	
 	

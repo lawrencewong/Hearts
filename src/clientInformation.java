@@ -117,8 +117,5 @@ public class clientInformation implements Serializable{
 	public int getpenaltyCards(){
 		return penaltyCards;
 	}
-	
-	
-	
 
 }

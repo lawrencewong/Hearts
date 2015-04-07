@@ -34,9 +34,13 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JPanel;
 
+import org.omg.PortableInterceptor.ClientRequestInterceptor;
+
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 
 public class Client {
@@ -59,6 +63,7 @@ public class Client {
 	Boolean myLead = false;
 	static Boolean allHearts = false;
 	static String clientName;
+	private static JTextArea notices;
 	private static messageOBJ outMessage = null;
 	private JLabel lblRoomFullSorry;
 	private JButton btnExit;
@@ -138,13 +143,14 @@ public class Client {
 	private static HashMap<String, JLabel> cardTopLabels = new HashMap<String, JLabel>();
 	private static Boolean myTurn = false;
 	private static Boolean firstTurn = false;
-	
+	boolean allowLeave = false;
 	private int toPass = 3;
 	private JLabel bottomScore;
 	private JLabel leftScore;
 	private JLabel topScore;
 	private JLabel rightScore;
-
+	private static JButton playAgain;
+	static String leadSuit = ""; 
 
 
 	public Client(String serverIP, String clientUsername) throws IOException {
@@ -166,12 +172,40 @@ public class Client {
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				if(allowLeave){
+					playerLeft();
+					System.exit(0);
+				}
+			}
+		});
 		frame.getContentPane().setForeground(Color.BLACK);
 		frame.setTitle("Hearts @ " + IPAddress);
 		frame.getContentPane().setLayout(null);
 		
+		playAgain = new JButton("Play Next Hand");
+		playAgain.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				playAgain.setVisible(false);
+				playNextHand();
+			}
+		});
+		playAgain.setBounds(431, 307, 200, 50);
+		playAgain.setVisible(false);
+		frame.getContentPane().add(playAgain);
+		
+		notices = new JTextArea();
+		notices.setOpaque(false);
+		notices.setForeground(new Color(255, 251, 0));
+		notices.setEditable(false);
+		notices.setLineWrap(true);
+		notices.setBounds(586, 407, 394, 96);
+		frame.getContentPane().add(notices);
+		
 		lblRoomFullSorry = new JLabel("Room full. Sorry!");
-		lblRoomFullSorry.setForeground(Color.WHITE);
+		lblRoomFullSorry.setForeground(new Color(255, 251, 0));
 		lblRoomFullSorry.setHorizontalAlignment(SwingConstants.CENTER);
 		lblRoomFullSorry.setBounds(431, 189, 200, 50);
 		frame.getContentPane().add(lblRoomFullSorry);
@@ -180,7 +214,7 @@ public class Client {
 		
 		readylabel = new JLabel("");
 		readylabel.setHorizontalAlignment(SwingConstants.CENTER);
-		readylabel.setForeground(Color.WHITE);
+		readylabel.setForeground(new Color(255, 251, 0));
 		readylabel.setVerticalAlignment(SwingConstants.TOP);
 		readylabel.setBounds(431, 200, 200, 39);
 		frame.getContentPane().add(readylabel);
@@ -189,7 +223,7 @@ public class Client {
 		
 		JLabel playingASlblNewLabel = new JLabel("Playing as " + clientName);
 		playingASlblNewLabel.setFont(new Font("HelveticaNeueLT Pro 55 Roman", Font.PLAIN, 12));
-		playingASlblNewLabel.setForeground(new Color(255, 255, 255));
+		playingASlblNewLabel.setForeground(new Color(255, 251, 0));
 		playingASlblNewLabel.setBounds(0, 0, 225, 23);
 		frame.getContentPane().add(playingASlblNewLabel);
 		
@@ -231,7 +265,6 @@ public class Client {
 		bhc0.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				System.out.println("CLICKED 0: " + hand.get(0).getSpriteURL() + " POW: " +  hand.get(0).getPower() + " TP: " + toPass + " myTurn " + myTurn + " first turn " + firstTurn );
 				if(toPass > 0){
 					bhc0.setIcon(null);
 					bhc0.setVisible(false);
@@ -251,7 +284,6 @@ public class Client {
 							bottomCardPanel.setVisible(true);
 						}
 					}else if(myLead){
-						System.out.println("MY LEAD");
 						if(hand.get(0).getSuit().equals("H")){
 							if(brokenHearts){
 								bhc0.setIcon(null);
@@ -283,13 +315,23 @@ public class Client {
 							bottomCardPanel.setVisible(true);
 						}
 					}else{
-						bhc0.setIcon(null);
-						bhc0.setVisible(false);
-						playCard(hand.get(0));
-						ImageIcon imageTopIcon = new ImageIcon(hand.get(0).getSpriteURL());
-						bc.setIcon(imageTopIcon);
-						bottomCardPanel.add( bc, BorderLayout.CENTER );
-						bottomCardPanel.setVisible(true);
+						if(doIHaveLeadSuit() && hand.get(0).getSuit().equals(leadSuit)){
+							bhc0.setIcon(null);
+							bhc0.setVisible(false);
+							playCard(hand.get(0));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(0).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}else if(doIHaveLeadSuit() == false){
+							bhc0.setIcon(null);
+							bhc0.setVisible(false);
+							playCard(hand.get(0));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(0).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}
 					}
 				}
 			}
@@ -300,7 +342,6 @@ public class Client {
 		bhc1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("CLICKED 1: " + hand.get(1).getSpriteURL() + " POW: " +  hand.get(1).getPower() + " TP: " + toPass + " myTurn " + myTurn + " first turn " + firstTurn );
 				if(toPass > 0){
 					bhc1.setIcon(null);
 					bhc1.setVisible(false);
@@ -320,7 +361,6 @@ public class Client {
 							bottomCardPanel.setVisible(true);
 						}
 					}else if(myLead){
-						System.out.println("MY LEAD");
 						if(hand.get(1).getSuit().equals("H")){
 							if(brokenHearts){
 								bhc1.setIcon(null);
@@ -352,13 +392,23 @@ public class Client {
 							bottomCardPanel.setVisible(true);
 						}
 					}else{
-						bhc1.setIcon(null);
-						bhc1.setVisible(false);
-						playCard(hand.get(1));
-						ImageIcon imageTopIcon = new ImageIcon(hand.get(1).getSpriteURL());
-						bc.setIcon(imageTopIcon);
-						bottomCardPanel.add( bc, BorderLayout.CENTER );
-						bottomCardPanel.setVisible(true);
+						if(doIHaveLeadSuit() && hand.get(1).getSuit().equals(leadSuit)){
+							bhc1.setIcon(null);
+							bhc1.setVisible(false);
+							playCard(hand.get(1));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(1).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}else if(doIHaveLeadSuit() == false){
+							bhc1.setIcon(null);
+							bhc1.setVisible(false);
+							playCard(hand.get(1));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(1).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}
 					}
 				}
 			}
@@ -369,11 +419,9 @@ public class Client {
 		bhc2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("CLICKED 2: " + hand.get(2).getSpriteURL() + " POW: " +  hand.get(2).getPower() + " TP: " + toPass + " myTurn " + myTurn + " first turn " + firstTurn );
 				if(toPass > 0){
 					bhc2.setIcon(null);
 					bhc2.setVisible(false);
-					System.out.println(hand.get(2).getSuit() + hand.get(2).getRank());
 					passCard(hand.get(2));
 					passedCards.add(2);
 					toPass--;
@@ -390,7 +438,6 @@ public class Client {
 							bottomCardPanel.setVisible(true);
 						}
 					}else if(myLead){
-						System.out.println("MY LEAD");
 						if(hand.get(2).getSuit().equals("H")){
 							if(brokenHearts){
 								bhc2.setIcon(null);
@@ -422,13 +469,23 @@ public class Client {
 							bottomCardPanel.setVisible(true);
 						}
 					}else{
-						bhc2.setIcon(null);
-						bhc2.setVisible(false);
-						playCard(hand.get(2));
-						ImageIcon imageTopIcon = new ImageIcon(hand.get(2).getSpriteURL());
-						bc.setIcon(imageTopIcon);
-						bottomCardPanel.add( bc, BorderLayout.CENTER );
-						bottomCardPanel.setVisible(true);
+						if(doIHaveLeadSuit() && hand.get(2).getSuit().equals(leadSuit)){
+							bhc2.setIcon(null);
+							bhc2.setVisible(false);
+							playCard(hand.get(2));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(2).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}else if(doIHaveLeadSuit() == false){
+							bhc2.setIcon(null);
+							bhc2.setVisible(false);
+							playCard(hand.get(2));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(2).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}
 					}
 				}
 			}
@@ -439,11 +496,9 @@ public class Client {
 		bhc3.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("CLICKED 3: " + hand.get(3).getSpriteURL() + " POW: " +  hand.get(3).getPower() + " TP: " + toPass + " myTurn " + myTurn + " first turn " + firstTurn );
 				if(toPass > 0){
 					bhc3.setIcon(null);
 					bhc3.setVisible(false);
-					System.out.println(hand.get(3).getSuit() + hand.get(3).getRank());
 					passCard(hand.get(3));
 					passedCards.add(3);
 					toPass--;
@@ -460,7 +515,6 @@ public class Client {
 							bottomCardPanel.setVisible(true);
 						}
 					}else if(myLead){
-						System.out.println("MY LEAD");
 						if(hand.get(3).getSuit().equals("H")){
 							if(brokenHearts){
 								bhc3.setIcon(null);
@@ -492,13 +546,23 @@ public class Client {
 							bottomCardPanel.setVisible(true);
 						}
 					}else{
-						bhc3.setIcon(null);
-						bhc3.setVisible(false);
-						playCard(hand.get(3));
-						ImageIcon imageTopIcon = new ImageIcon(hand.get(3).getSpriteURL());
-						bc.setIcon(imageTopIcon);
-						bottomCardPanel.add( bc, BorderLayout.CENTER );
-						bottomCardPanel.setVisible(true);
+						if(doIHaveLeadSuit() && hand.get(3).getSuit().equals(leadSuit)){
+							bhc3.setIcon(null);
+							bhc3.setVisible(false);
+							playCard(hand.get(3));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(3).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}else if(doIHaveLeadSuit() == false){
+							bhc3.setIcon(null);
+							bhc3.setVisible(false);
+							playCard(hand.get(3));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(3).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}
 					}
 				}
 			}
@@ -509,11 +573,9 @@ public class Client {
 		bhc4.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("CLICKED 4: " + hand.get(4).getSpriteURL() + " POW: " +  hand.get(4).getPower() + " TP: " + toPass + " myTurn " + myTurn + " first turn " + firstTurn );
 				if(toPass > 0){
 					bhc4.setIcon(null);
 					bhc4.setVisible(false);
-					System.out.println(hand.get(4).getSuit() + hand.get(4).getRank());
 					passCard(hand.get(4));
 					passedCards.add(4);
 					toPass--;
@@ -530,7 +592,6 @@ public class Client {
 							bottomCardPanel.setVisible(true);
 						}
 					}else if(myLead){
-						System.out.println("MY LEAD");
 						if(hand.get(4).getSuit().equals("H")){
 							if(brokenHearts){
 								bhc4.setIcon(null);
@@ -562,13 +623,23 @@ public class Client {
 							bottomCardPanel.setVisible(true);
 						}
 					}else{
-						bhc4.setIcon(null);
-						bhc4.setVisible(false);
-						playCard(hand.get(4));
-						ImageIcon imageTopIcon = new ImageIcon(hand.get(4).getSpriteURL());
-						bc.setIcon(imageTopIcon);
-						bottomCardPanel.add( bc, BorderLayout.CENTER );
-						bottomCardPanel.setVisible(true);
+						if(doIHaveLeadSuit() && hand.get(4).getSuit().equals(leadSuit)){
+							bhc4.setIcon(null);
+							bhc4.setVisible(false);
+							playCard(hand.get(4));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(4).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}else if(doIHaveLeadSuit() == false){
+							bhc4.setIcon(null);
+							bhc4.setVisible(false);
+							playCard(hand.get(4));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(4).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}
 					}
 				}
 			}
@@ -579,11 +650,9 @@ public class Client {
 		bhc5.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("CLICKED 5: " + hand.get(5).getSpriteURL() + " POW: " +  hand.get(5).getPower() + " TP: " + toPass + " myTurn " + myTurn + " first turn " + firstTurn );
 				if(toPass > 0){
 					bhc5.setIcon(null);
 					bhc5.setVisible(false);
-					System.out.println(hand.get(5).getSuit() + hand.get(5).getRank());
 					passCard(hand.get(5));
 					passedCards.add(5);
 					toPass--;
@@ -600,7 +669,6 @@ public class Client {
 							bottomCardPanel.setVisible(true);
 						}
 					}else if(myLead){
-						System.out.println("MY LEAD");
 						if(hand.get(5).getSuit().equals("H")){
 							if(brokenHearts){
 								bhc5.setIcon(null);
@@ -632,13 +700,23 @@ public class Client {
 							bottomCardPanel.setVisible(true);
 						}
 					}else{
-						bhc5.setIcon(null);
-						bhc5.setVisible(false);
-						playCard(hand.get(5));
-						ImageIcon imageTopIcon = new ImageIcon(hand.get(5).getSpriteURL());
-						bc.setIcon(imageTopIcon);
-						bottomCardPanel.add( bc, BorderLayout.CENTER );
-						bottomCardPanel.setVisible(true);
+						if(doIHaveLeadSuit() && hand.get(5).getSuit().equals(leadSuit)){
+							bhc5.setIcon(null);
+							bhc5.setVisible(false);
+							playCard(hand.get(5));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(5).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}else if(doIHaveLeadSuit() == false){
+							bhc5.setIcon(null);
+							bhc5.setVisible(false);
+							playCard(hand.get(5));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(5).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}
 					}
 				}
 			}
@@ -649,11 +727,9 @@ public class Client {
 		bhc6.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("CLICKED 6: " + hand.get(6).getSpriteURL() + " POW: " +  hand.get(6).getPower() + " TP: " + toPass + " myTurn " + myTurn + " first turn " + firstTurn );
 				if(toPass > 0){
 					bhc6.setIcon(null);
 					bhc6.setVisible(false);
-					System.out.println(hand.get(6).getSuit() + hand.get(6).getRank());
 					passCard(hand.get(6));
 					passedCards.add(6);
 					toPass--;
@@ -670,7 +746,6 @@ public class Client {
 							bottomCardPanel.setVisible(true);
 						}
 					}else if(myLead){
-						System.out.println("MY LEAD");
 						if(hand.get(6).getSuit().equals("H")){
 							if(brokenHearts){
 								bhc6.setIcon(null);
@@ -702,13 +777,23 @@ public class Client {
 							bottomCardPanel.setVisible(true);
 						}
 					}else{
-						bhc6.setIcon(null);
-						bhc6.setVisible(false);
-						playCard(hand.get(6));
-						ImageIcon imageTopIcon = new ImageIcon(hand.get(6).getSpriteURL());
-						bc.setIcon(imageTopIcon);
-						bottomCardPanel.add( bc, BorderLayout.CENTER );
-						bottomCardPanel.setVisible(true);
+						if(doIHaveLeadSuit() && hand.get(6).getSuit().equals(leadSuit)){
+							bhc6.setIcon(null);
+							bhc6.setVisible(false);
+							playCard(hand.get(6));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(6).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}else if(doIHaveLeadSuit() == false){
+							bhc6.setIcon(null);
+							bhc6.setVisible(false);
+							playCard(hand.get(6));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(6).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}
 					}
 				}
 			}
@@ -719,11 +804,9 @@ public class Client {
 		bhc7.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("CLICKED 7: " + hand.get(7).getSpriteURL() + " POW: " +  hand.get(7).getPower() + " TP: " + toPass + " myTurn " + myTurn + " first turn " + firstTurn );
 				if(toPass > 0){
 					bhc7.setIcon(null);
 					bhc7.setVisible(false);
-					System.out.println(hand.get(7).getSuit() + hand.get(7).getRank());
 					passCard(hand.get(7));
 					passedCards.add(7);
 					toPass--;
@@ -740,7 +823,6 @@ public class Client {
 							bottomCardPanel.setVisible(true);
 						}
 					}else if(myLead){
-						System.out.println("MY LEAD");
 						if(hand.get(7).getSuit().equals("H")){
 							if(brokenHearts){
 								bhc7.setIcon(null);
@@ -772,13 +854,23 @@ public class Client {
 							bottomCardPanel.setVisible(true);
 						}
 					}else{
-						bhc7.setIcon(null);
-						bhc7.setVisible(false);
-						playCard(hand.get(7));
-						ImageIcon imageTopIcon = new ImageIcon(hand.get(7).getSpriteURL());
-						bc.setIcon(imageTopIcon);
-						bottomCardPanel.add( bc, BorderLayout.CENTER );
-						bottomCardPanel.setVisible(true);
+						if(doIHaveLeadSuit() && hand.get(7).getSuit().equals(leadSuit)){
+							bhc7.setIcon(null);
+							bhc7.setVisible(false);
+							playCard(hand.get(7));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(7).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}else if(doIHaveLeadSuit() == false){
+							bhc7.setIcon(null);
+							bhc7.setVisible(false);
+							playCard(hand.get(7));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(7).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}
 					}
 				}
 			}
@@ -789,11 +881,9 @@ public class Client {
 		bhc8.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("CLICKED 8: " + hand.get(8).getSpriteURL() +" POW: " +  hand.get(8).getPower() +  " TP: " + toPass + " myTurn " + myTurn + " first turn " + firstTurn );
 				if(toPass > 0){
 					bhc8.setIcon(null);
 					bhc8.setVisible(false);
-					System.out.println(hand.get(8).getSuit() + hand.get(8).getRank());
 					passCard(hand.get(8));
 					passedCards.add(8);
 					toPass--;
@@ -810,7 +900,6 @@ public class Client {
 							bottomCardPanel.setVisible(true);
 						}
 					}else if(myLead){
-						System.out.println("MY LEAD");
 						if(hand.get(8).getSuit().equals("H")){
 							if(brokenHearts){
 								bhc8.setIcon(null);
@@ -842,13 +931,23 @@ public class Client {
 							bottomCardPanel.setVisible(true);
 						}
 					}else{
-						bhc8.setIcon(null);
-						bhc8.setVisible(false);
-						playCard(hand.get(8));
-						ImageIcon imageTopIcon = new ImageIcon(hand.get(8).getSpriteURL());
-						bc.setIcon(imageTopIcon);
-						bottomCardPanel.add( bc, BorderLayout.CENTER );
-						bottomCardPanel.setVisible(true);
+						if(doIHaveLeadSuit() && hand.get(8).getSuit().equals(leadSuit)){
+							bhc8.setIcon(null);
+							bhc8.setVisible(false);
+							playCard(hand.get(8));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(8).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}else if(doIHaveLeadSuit() == false){
+							bhc8.setIcon(null);
+							bhc8.setVisible(false);
+							playCard(hand.get(8));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(8).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}
 					}
 				}
 			}
@@ -859,11 +958,9 @@ public class Client {
 		bhc9.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("CLICKED 9: " + hand.get(9).getSpriteURL() +" POW: " +  hand.get(9).getPower() +  " TP: " + toPass + " myTurn " + myTurn + " first turn " + firstTurn );
 				if(toPass > 0){
 					bhc9.setIcon(null);
 					bhc9.setVisible(false);
-					System.out.println(hand.get(9).getSuit() + hand.get(9).getRank());
 					passCard(hand.get(9));
 					passedCards.add(9);
 					toPass--;
@@ -880,7 +977,6 @@ public class Client {
 							bottomCardPanel.setVisible(true);
 						}
 					}else if(myLead){
-						System.out.println("MY LEAD");
 						if(hand.get(9).getSuit().equals("H")){
 							if(brokenHearts){
 								bhc9.setIcon(null);
@@ -912,13 +1008,23 @@ public class Client {
 							bottomCardPanel.setVisible(true);
 						}
 					}else{
-						bhc9.setIcon(null);
-						bhc9.setVisible(false);
-						playCard(hand.get(9));
-						ImageIcon imageTopIcon = new ImageIcon(hand.get(9).getSpriteURL());
-						bc.setIcon(imageTopIcon);
-						bottomCardPanel.add( bc, BorderLayout.CENTER );
-						bottomCardPanel.setVisible(true);
+						if(doIHaveLeadSuit() && hand.get(9).getSuit().equals(leadSuit)){
+							bhc9.setIcon(null);
+							bhc9.setVisible(false);
+							playCard(hand.get(9));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(9).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}else if(doIHaveLeadSuit() == false){
+							bhc9.setIcon(null);
+							bhc9.setVisible(false);
+							playCard(hand.get(9));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(9).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}
 					}
 				}
 			}
@@ -929,11 +1035,9 @@ public class Client {
 		bhc10.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("CLICKED 10: " + hand.get(10).getSpriteURL() +" POW: " +  hand.get(10).getPower() +  " TP: " + toPass + " myTurn " + myTurn + " first turn " + firstTurn );
 				if(toPass > 0){
 					bhc10.setIcon(null);
 					bhc10.setVisible(false);
-					System.out.println(hand.get(10).getSuit() + hand.get(10).getRank());
 					passCard(hand.get(10));
 					passedCards.add(10);
 					toPass--;
@@ -950,7 +1054,6 @@ public class Client {
 							bottomCardPanel.setVisible(true);
 						}
 					}else if(myLead){
-						System.out.println("MY LEAD");
 						if(hand.get(10).getSuit().equals("H")){
 							if(brokenHearts){
 								bhc10.setIcon(null);
@@ -982,13 +1085,23 @@ public class Client {
 							bottomCardPanel.setVisible(true);
 						}
 					}else{
-						bhc10.setIcon(null);
-						bhc10.setVisible(false);
-						playCard(hand.get(10));
-						ImageIcon imageTopIcon = new ImageIcon(hand.get(10).getSpriteURL());
-						bc.setIcon(imageTopIcon);
-						bottomCardPanel.add( bc, BorderLayout.CENTER );
-						bottomCardPanel.setVisible(true);
+						if(doIHaveLeadSuit() && hand.get(10).getSuit().equals(leadSuit)){
+							bhc10.setIcon(null);
+							bhc10.setVisible(false);
+							playCard(hand.get(10));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(10).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}else if(doIHaveLeadSuit() == false){
+							bhc10.setIcon(null);
+							bhc10.setVisible(false);
+							playCard(hand.get(10));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(10).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}
 					}
 				}
 			}
@@ -999,11 +1112,9 @@ public class Client {
 		bhc11.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("CLICKED 11: " + hand.get(11).getSpriteURL() + " POW: " +  hand.get(11).getPower() +  " TP: " + toPass + " myTurn " + myTurn + " first turn " + firstTurn );
 				if(toPass > 0){
 					bhc11.setIcon(null);
 					bhc11.setVisible(false);
-					System.out.println(hand.get(11).getSuit() + hand.get(11).getRank());
 					passCard(hand.get(11));
 					passedCards.add(11);	
 					toPass--;
@@ -1020,7 +1131,6 @@ public class Client {
 							bottomCardPanel.setVisible(true);
 						}
 					}else if(myLead){
-						System.out.println("MY LEAD");
 						if(hand.get(11).getSuit().equals("H")){
 							if(brokenHearts){
 								bhc11.setIcon(null);
@@ -1052,13 +1162,23 @@ public class Client {
 							bottomCardPanel.setVisible(true);
 						}
 					}else{
-						bhc11.setIcon(null);
-						bhc11.setVisible(false);
-						playCard(hand.get(11));
-						ImageIcon imageTopIcon = new ImageIcon(hand.get(11).getSpriteURL());
-						bc.setIcon(imageTopIcon);
-						bottomCardPanel.add( bc, BorderLayout.CENTER );
-						bottomCardPanel.setVisible(true);
+						if(doIHaveLeadSuit() && hand.get(11).getSuit().equals(leadSuit)){
+							bhc11.setIcon(null);
+							bhc11.setVisible(false);
+							playCard(hand.get(11));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(11).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}else if(doIHaveLeadSuit() == false){
+							bhc11.setIcon(null);
+							bhc11.setVisible(false);
+							playCard(hand.get(11));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(11).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}
 					}
 				}
 			}
@@ -1069,11 +1189,9 @@ public class Client {
 		bhc12.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("CLICKED 12: " + hand.get(12).getSpriteURL() + " POW: " +  hand.get(12).getPower() + " TP: " + toPass + " myTurn " + myTurn + " firstturn: " + firstTurn );
 				if(toPass > 0){
 					bhc12.setIcon(null);
 					bhc12.setVisible(false);
-					System.out.println(hand.get(12).getSuit() + hand.get(12).getRank());
 					passCard(hand.get(12));
 					passedCards.add(12);
 					toPass--;
@@ -1090,7 +1208,6 @@ public class Client {
 							bottomCardPanel.setVisible(true);
 						}
 					}else if(myLead){
-						System.out.println("MY LEAD");
 						if(hand.get(12).getSuit().equals("H")){
 							if(brokenHearts){
 								bhc12.setIcon(null);
@@ -1122,13 +1239,23 @@ public class Client {
 							bottomCardPanel.setVisible(true);
 						}
 					}else{
-						bhc12.setIcon(null);
-						bhc12.setVisible(false);
-						playCard(hand.get(12));
-						ImageIcon imageTopIcon = new ImageIcon(hand.get(12).getSpriteURL());
-						bc.setIcon(imageTopIcon);
-						bottomCardPanel.add( bc, BorderLayout.CENTER );
-						bottomCardPanel.setVisible(true);
+						if(doIHaveLeadSuit() && hand.get(12).getSuit().equals(leadSuit)){
+							bhc12.setIcon(null);
+							bhc12.setVisible(false);
+							playCard(hand.get(12));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(12).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}else if(doIHaveLeadSuit() == false){
+							bhc12.setIcon(null);
+							bhc12.setVisible(false);
+							playCard(hand.get(12));
+							ImageIcon imageTopIcon = new ImageIcon(hand.get(12).getSpriteURL());
+							bc.setIcon(imageTopIcon);
+							bottomCardPanel.add( bc, BorderLayout.CENTER );
+							bottomCardPanel.setVisible(true);
+						}
 					}
 				}
 			}
@@ -1319,28 +1446,28 @@ public class Client {
 		topCardPanel.add(tc);
 		
 		lblIn = new JLabel("Instructions");
-		lblIn.setForeground(Color.WHITE);
+		lblIn.setForeground(new Color(255, 251, 0));
 		lblIn.setBounds(138, 368, 76, 39);
 		frame.getContentPane().add(lblIn);
 		lblIn.setVisible(false);
 		
 		leftName = new JLabel("");
-		leftName.setForeground(Color.WHITE);
+		leftName.setForeground(new Color(255, 251, 0));
 		leftName.setBounds(117, 189, 178, 50);
 		frame.getContentPane().add(leftName);
 		
 		topName = new JLabel("");
-		topName.setForeground(Color.WHITE);
+		topName.setForeground(new Color(255, 251, 0));
 		topName.setBounds(336, 122, 200, 31);
 		frame.getContentPane().add(topName);
 		
 		rightName = new JLabel("");
-		rightName.setForeground(Color.WHITE);
+		rightName.setForeground(new Color(255, 251, 0));
 		rightName.setBounds(822, 189, 178, 50);
 		frame.getContentPane().add(rightName);
 		
 		bottomName = new JLabel("");
-		bottomName.setForeground(Color.WHITE);
+		bottomName.setForeground(new Color(255, 251, 0));
 		bottomName.setBounds(501, 534, 200, 39);
 		frame.getContentPane().add(bottomName);
 		
@@ -1348,7 +1475,7 @@ public class Client {
 		instructionArea.setEditable(false);
 		instructionArea.setWrapStyleWord(true);
 		instructionArea.setLineWrap(true);
-		instructionArea.setForeground(Color.WHITE);
+		instructionArea.setForeground(new Color(255, 251, 0));
 		instructionArea.setOpaque(false);
 		//instructionArea.setBackground(new Color(0, 100, 0));
 		instructionArea.setBounds(138, 407, 275, 166);
@@ -1415,22 +1542,22 @@ public class Client {
 		cardLeftLabels.put("13", lhc12);
 		
 		bottomScore = new JLabel("");
-		bottomScore.setForeground(Color.WHITE);
+		bottomScore.setForeground(new Color(255, 251, 0));
 		bottomScore.setBounds(726, 534, 200, 39);
 		frame.getContentPane().add(bottomScore);
 		
 		leftScore = new JLabel("");
-		leftScore.setForeground(Color.WHITE);
+		leftScore.setForeground(new Color(255, 251, 0));
 		leftScore.setBounds(120, 246, 178, 50);
 		frame.getContentPane().add(leftScore);
 		
 		topScore = new JLabel("");
-		topScore.setForeground(Color.WHITE);
+		topScore.setForeground(new Color(255, 251, 0));
 		topScore.setBounds(571, 119, 200, 31);
 		frame.getContentPane().add(topScore);
 		
 		rightScore = new JLabel("");
-		rightScore.setForeground(Color.WHITE);
+		rightScore.setForeground(new Color(255, 251, 0));
 		rightScore.setBounds(822, 264, 178, 50);
 		frame.getContentPane().add(rightScore);
 		topCardPanel.setOpaque(false);
@@ -1474,24 +1601,17 @@ public class Client {
                 		readylabel.setText("Are you ready?");
                 		readylabel.setVisible(true);
                 		btnReady.setVisible(true);
+                		
+                		instructionArea.setVisible(false);
                 	}else if(receiveMessage.getTypeOBJMessage().equals("GF")){
                 		lblRoomFullSorry.setVisible(true);
                 		btnExit.setVisible(true);
                 	}else if(receiveMessage.getTypeOBJMessage().equals("DC")){
                 		bottomHandpanel.setVisible(true);
+                		notices.setVisible(false);
                 		Card tempCard = new Card();
                 		tempCard = receiveMessage.getCardOBJMessage();
-                		System.out.println("HAND: ");
-                		for(int i = 0; i < hand.size(); i++){
-                			System.out.print(hand.get(i).getSpriteURL() + " ");
-                		}
-                		System.out.println("\n");
                 		hand.add(tempCard);
-                		System.out.println("HAND: ");
-                		for(int i = 0; i < hand.size(); i++){
-                			System.out.print(hand.get(i).getSpriteURL() + " ");
-                		}
-                		System.out.println("\n");
                 		Integer index = hand.size();
                 		ImageIcon imageIcon = new ImageIcon(receiveMessage.getCardOBJMessage().getSpriteURL());
                 		cardLabels.get(index.toString()).setIcon(imageIcon);
@@ -1509,6 +1629,12 @@ public class Client {
         		        ImageIcon imageTopIcon = new ImageIcon("sprites\\bv.png");
                 		cardTopLabels.get(index.toString()).setIcon(imageTopIcon);
         		        topHandpanel.add( cardTopLabels.get(index.toString()), BorderLayout.CENTER );
+        		        for(Integer i = 1; i < 14; i++){
+                			cardLabels.get(i.toString()).setVisible(true);
+                			cardLeftLabels.get(i.toString()).setVisible(true);
+                			cardTopLabels.get(i.toString()).setVisible(true);
+                			cardRightLabels.get(i.toString()).setVisible(true);
+                		}
         		        
                 	}else if(receiveMessage.getTypeOBJMessage().equals("IN")){
                 		instructionArea.setText(receiveMessage.getMessageOBJMessage());
@@ -1520,7 +1646,6 @@ public class Client {
                 	}else if(receiveMessage.getTypeOBJMessage().equals("FC")){
                 		firstTurn = true;
                 		myTurn = true;
-                		System.out.println("MY TURN" + firstTurn + " " + myTurn);
                 		trickNumber = 1;
                 	}else if(receiveMessage.getTypeOBJMessage().equals("SP")){
                 		if( mySeat == 0){
@@ -1558,7 +1683,7 @@ public class Client {
                 	}else if(receiveMessage.getTypeOBJMessage().equals("AC")){
                 		firstTurn = false;
                 		myTurn = true;
-                		System.out.println(" ACTUAL MY TURN" + firstTurn + " " + myTurn);
+                		leadSuit =  receiveMessage.getMessageOBJMessage();
                 	}else if(receiveMessage.getTypeOBJMessage().equals("US")){
                 		trickNumber = receiveMessage.getTrickOBJMessage();
 	               		if(receiveMessage.getMessageOBJMessage().equals(bottomName.getText())){
@@ -1583,7 +1708,6 @@ public class Client {
                 		firstTurn = false;
                 		myTurn = true;
                 		myLead = true;
-                		System.out.println(" ACTUAL MY TURN" + firstTurn + " " + myTurn);
                 	}else if(receiveMessage.getTypeOBJMessage().equals("NH")){
                 		hand.clear();
                 		bc.setIcon(null);
@@ -1593,6 +1717,57 @@ public class Client {
                 		brokenHearts = false;
                 		allHearts = false;
                 		toPass = 3;
+                		allowLeave = false;
+                	}else if(receiveMessage.getTypeOBJMessage().equals("AL")){
+                		allowLeave = true;
+                		playAgain.setVisible(true);
+                	}else if(receiveMessage.getTypeOBJMessage().equals("GO")){
+                		hand.clear();
+                		bc.setIcon(null);
+                		lc.setIcon(null);
+                		tc.setIcon(null);
+                		rc.setIcon(null);
+                		brokenHearts = false;
+                		allHearts = false;
+                		toPass = 3;
+                		instructionArea.setVisible(false);
+                		lblIn.setVisible(false);
+                		notices.setText(receiveMessage.getMessageOBJMessage());
+                		notices.setVisible(true);
+                		mySeat = 0;
+                		firstTurn = false;
+                		myTurn = false;
+                		trickNumber = 0;
+                		seated = 0;
+                		brokenHearts = false;
+                		myLead = false;
+                		allHearts = false;
+                		for(Integer i = 1; i < 14; i++){
+                			cardLabels.get(i.toString()).setIcon(null);
+                			cardLabels.get(i.toString()).setVisible(false);
+                			cardLeftLabels.get(i.toString()).setIcon(null);
+                			cardLeftLabels.get(i.toString()).setVisible(false);
+                			cardTopLabels.get(i.toString()).setIcon(null);
+                			cardTopLabels.get(i.toString()).setVisible(false);
+                			cardRightLabels.get(i.toString()).setIcon(null);
+                			cardRightLabels.get(i.toString()).setVisible(false);
+                		}
+                		
+                		leftName.setText(null);
+                		leftScore.setText(null);
+                		topName.setText(null);
+                		topScore.setText(null);
+                		bottomName.setText(null);
+                		bottomScore.setText(null);
+                		rightScore.setText(null);
+                		rightName.setText(null);
+                	}else if(receiveMessage.getTypeOBJMessage().equals("WT")){
+                		if(clientName.equals(receiveMessage.getMessageOBJMessage())){
+                			notices.setText("My Turn");
+                		}else{
+                			notices.setText(receiveMessage.getMessageOBJMessage() + "'s Turn");
+                		}
+                		notices.setVisible(true);
                 	}
                 	
                 } catch (ClassNotFoundException e){
@@ -1604,8 +1779,28 @@ public class Client {
 		}
 	}
 	
+	
+	public static void playNextHand(){
+		playAgain.setVisible(false);
+		messageOBJ playerLeftMessage = new messageOBJ();
+		playerLeftMessage.setTypeOBJMessage("PN");
+		playerLeftMessage.setMessageOBJMessage("");
+		playerLeftMessage.setUsernameOBJMessage(clientName);
+		outMessage = playerLeftMessage;
+		outThread.run();
+	}
+	
+	
+	public static void playerLeft(){
+		messageOBJ playerLeftMessage = new messageOBJ();
+		playerLeftMessage.setTypeOBJMessage("PL");
+		playerLeftMessage.setMessageOBJMessage("");
+		playerLeftMessage.setUsernameOBJMessage(clientName);
+		outMessage = playerLeftMessage;
+		outThread.run();
+	}
+	
 	public static void playCard(Card card){
-		System.out.println("JUST PLAYED: " + card.getSpriteURL() + " " +  card.getRank() + card.getSuit() + " P: " + card.getPower());
 		messageOBJ passCardMessage = new messageOBJ();
 		passCardMessage.setTypeOBJMessage("LC");
 		passCardMessage.setMessageOBJMessage("");
@@ -1644,6 +1839,18 @@ public class Client {
 		}
 	}
 	
+	public static Boolean doIHaveLeadSuit(){
+		boolean haveSuit = false;
+		Integer index = 0;
+		for( int i = 0; i < hand.size(); i++){
+			index = i + 1;
+			if( hand.get(i).getSuit().equals(leadSuit) && cardLabels.get(index.toString()).isVisible()){
+				haveSuit = true;
+			}
+		}
+		return haveSuit;
+	}
+	
 	public static void checkAllHearts(){
 		Integer check = 0;
 		for(int i = 0; i < hand.size(); i ++){
@@ -1680,6 +1887,7 @@ public class Client {
 			}
 			outMessage = null;
 			myLead = false;
+			leadSuit = "";
 		}
 	}
 }
